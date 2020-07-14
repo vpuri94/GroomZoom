@@ -10,6 +10,9 @@ import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import fragments.AppointmentFragment;
+import fragments.BrowseFragment;
+
 public class MainActivity extends AppCompatActivity {
 
     final FragmentManager fragmentManager = getSupportFragmentManager();
@@ -26,16 +29,22 @@ public class MainActivity extends AppCompatActivity {
                 Fragment fragment;
                 switch (menuItem.getItemId()){
                     case R.id.action_browse:
+                        fragment = new BrowseFragment();
                         break;
                     case R.id.action_appt:
+                        fragment = new AppointmentFragment();
                         break;
                     case R.id.action_profile:
+                        fragment = new AppointmentFragment();
                         break;
                     default:
+                        fragment = new AppointmentFragment();
                         break;
                     }
+                    fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
                 return true;
             }
         });
+        bottomNavigationView.setSelectedItemId(R.id.action_browse);
     }
 }
