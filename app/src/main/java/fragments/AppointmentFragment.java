@@ -24,6 +24,7 @@ import com.parse.FindCallback;
 import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,7 +69,6 @@ public static final String TAG = "AppointmentFragment";
                     upcoming = false;
                 }
                 queryAppointments();
-                Toast.makeText(getContext(), "Selected : " + upcoming, Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -101,6 +101,7 @@ public static final String TAG = "AppointmentFragment";
         else {
             query.whereEqualTo(Appointments.KEY_OCCURRED, false);
         }
+        query.whereEqualTo(Appointments.KEY_BOOKER, ParseUser.getCurrentUser().getUsername());
         query.addDescendingOrder("createdAt");
         query.findInBackground(new FindCallback<Appointments>() {
             @Override

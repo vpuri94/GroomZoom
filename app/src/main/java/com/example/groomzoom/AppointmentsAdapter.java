@@ -69,10 +69,19 @@ public class AppointmentsAdapter extends RecyclerView.Adapter<AppointmentsAdapte
 
         public void bind(Appointments appointment) throws ParseException {
             // Bind the post data to the view elements
-            tvUsername.setText(appointment.getUser().fetchIfNeeded().getUsername());
-            tvDate.setText(appointment.getDate());
-            tvService.setText(appointment.getService());
-            tvPrice.setText("Price: $" + Integer.toString(appointment.getPrice()));
+            boolean isBarber;
+            isBarber = appointment.getBoolean("barber");
+            tvUsername.setText("Appointment with: " + appointment.getUser().fetchIfNeeded().getUsername());
+            if(isBarber){
+                tvService.setText("Service requested:  " + appointment.getService());
+
+            }
+            else{
+                tvService.setText("Service you wanted: " + appointment.getService());
+
+            }
+            tvDate.setText("Date of appointment: " + appointment.getDate()[0] + " @ "+ appointment.getDate()[1]);
+            tvPrice.setText("Cost: $" + Integer.toString(appointment.getPrice()));
             ParseFile image = appointment.getProfilePic();
             if (image != null) {
                 Glide.with(context).load(appointment.getProfilePic().getUrl()).into(ivProfilePic);

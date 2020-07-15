@@ -62,10 +62,6 @@ public class LoginActivity extends AppCompatActivity implements AdapterView.OnIt
             public void onClick(View view) {
                 String username = etUsername.getText().toString();
                 String password = etPassword.getText().toString();
-                if(optionSelected == ""){
-                    Toast.makeText(LoginActivity.this, "Need to select account type!", Toast.LENGTH_SHORT).show();
-                    return;
-                }
                 loginUser(username, password);
             }
         });

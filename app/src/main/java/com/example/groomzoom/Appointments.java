@@ -1,16 +1,13 @@
 package com.example.groomzoom;
 
-import android.text.format.DateUtils;
-
 import com.parse.ParseClassName;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.TimeZone;
+import java.util.Locale;
 
 @ParseClassName("Appointments")
 public class Appointments extends ParseObject {
@@ -22,6 +19,7 @@ public class Appointments extends ParseObject {
     public static final String KEY_OCCURRED = "occurred";
     public static final String KEY_USER = "user";
     public static final String KEY_SERVICE = "service";
+    public static final String KEY_BOOKER = "booker";
 
     public ParseFile getProfilePic() {
         return getParseFile(KEY_PROFILEPIC);
@@ -45,12 +43,15 @@ public class Appointments extends ParseObject {
         put(KEY_BARBER, isBarber);
     }
 
-    public String getDate() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+    public String[] getDate() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy", Locale.ENGLISH);
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.ENGLISH);
         Date date =  getDate(KEY_DATE);
         String dateTime = dateFormat.format(date);
+        String time = timeFormat.format(date);
+        String[] dateTimeFinal = {dateTime, time};
         // Converts the format above into "XX minutes or XX days ago
-        return dateTime;
+        return dateTimeFinal;
 
     }
 
@@ -74,6 +75,12 @@ public class Appointments extends ParseObject {
     }
     public void setService(String service){
         put(KEY_SERVICE, service);
+    }
+    public String getBooker(){
+        return getString(KEY_BOOKER);
+    }
+    public void setBooker(String booker){
+        put(KEY_BOOKER, booker);
     }
 
 
