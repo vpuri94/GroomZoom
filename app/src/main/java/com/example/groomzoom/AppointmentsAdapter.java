@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.parse.ParseException;
 import com.parse.ParseFile;
+import com.parse.ParseUser;
 
 import org.parceler.Parcels;
 
@@ -75,22 +76,24 @@ public class AppointmentsAdapter extends RecyclerView.Adapter<AppointmentsAdapte
         public void bind(Appointments appointment) throws ParseException {
             // Bind the post data to the view elements
             boolean isBarber;
-            isBarber = appointment.getBoolean("barber");
-            tvUsername.setText("Appointment with: " + appointment.getUser().fetchIfNeeded().getUsername());
-
-            if(isBarber){
+            isBarber = ParseUser.getCurrentUser().getBoolean("barber");
+            if(isBarber) {
+                tvUsername.setText("Appointment with: " + appointment.getBooker().fetchIfNeeded().getUsername());
                 tvService.setText("Service requested:  " + servicePreview(appointment.getServices()));
-
             }
             else{
+                tvUsername.setText("Appointment with: " + appointment.getUser().fetchIfNeeded().getUsername());
                 tvService.setText("Services you wanted: " + servicePreview(appointment.getServices()));
-
             }
             tvDate.setText("Date of appointment: " + appointment.getDate()[0] + " @ "+ appointment.getDate()[1]);
             tvPrice.setText("Cost: $" + Integer.toString(appointment.getPrice()));
-            ParseFile image = appointment.getProfilePic();
+            ParseFile image;
+            if(isBarber)
+                image = appointment.getProfilePic();
+            else
+                image = appointment.getBarberProfilePic();
             if (image != null) {
-                Glide.with(context).load(appointment.getProfilePic().getUrl()).into(ivProfilePic);
+                Glide.with(context).load(image.getUrl()).into(ivProfilePic);
             }
 
         }

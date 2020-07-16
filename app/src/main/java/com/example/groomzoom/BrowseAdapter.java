@@ -61,13 +61,26 @@ public class BrowseAdapter extends RecyclerView.Adapter<BrowseAdapter.ViewHolder
 
         public void bind(Browse browse) {
             tvName.setText(browse.getName());
-            tvService.setText("HAIRCUT AND COLOR PLACEHOLDER");
+            if(browse.getBarber())
+                tvService.setText("Services offered: " + servicePreview(browse.getServices()));
+            else
+                tvService.setText("Services requested: " + servicePreview(browse.getServices()));
+
             ParseFile profilePic = browse.getProfilePic();
             if(profilePic != null)
                 Glide.with(context).load(profilePic.getUrl()).into(ivProfile);
             float rating = (float) browse.getRating();
             rbRating.setRating(rating = rating > 0 ? rating / 2.0f : rating);
 
+        }
+        public String servicePreview(List<String> services){
+            String servPreview = "";
+            for(int x = 0; x < services.size() ; x++){
+                if(x > 1)
+                    return servPreview + ".....";
+                servPreview += services.get(x) + ", ";
+            }
+            return servPreview;
         }
     }
 }

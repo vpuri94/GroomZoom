@@ -21,6 +21,7 @@ import com.example.groomzoom.R;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,6 +74,10 @@ public class BrowseFragment extends Fragment {
     private void queryBrowse() {
         ParseQuery<Browse> query = ParseQuery.getQuery(Browse.class);
         query.include(Browse.KEY_USERNAME);
+        if(ParseUser.getCurrentUser().getBoolean("barber"))
+            query.whereEqualTo(Browse.KEY_BARBER, false);
+        else
+            query.whereEqualTo(Browse.KEY_BARBER, true);
         query.findInBackground(new FindCallback<Browse>() {
             @Override
             public void done(List<Browse> objects, ParseException e) {

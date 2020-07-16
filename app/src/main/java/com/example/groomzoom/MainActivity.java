@@ -12,6 +12,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import fragments.AppointmentFragment;
 import fragments.BrowseFragment;
+import fragments.ProfileFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -35,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
                         fragment = new AppointmentFragment();
                         break;
                     case R.id.action_profile:
-                        fragment = new AppointmentFragment();
+                        fragment = new ProfileFragment();
                         break;
                     default:
                         fragment = new AppointmentFragment();

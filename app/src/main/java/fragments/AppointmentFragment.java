@@ -101,13 +101,14 @@ public static final String TAG = "AppointmentFragment";
         allAppointments.clear();
         ParseQuery<Appointments> query = ParseQuery.getQuery(Appointments.class);
         query.include(Appointments.KEY_USER);
-        if(upcoming){
-            query.whereEqualTo(Appointments.KEY_OCCURRED, true);
-        }
-        else {
+        if(ParseUser.getCurrentUser().getBoolean("barber"))
+            query.whereEqualTo(Appointments.KEY_USER, ParseUser.getCurrentUser());
+        else
+            query.whereEqualTo(Appointments.KEY_BOOKER, ParseUser.getCurrentUser());
+        if(upcoming)
             query.whereEqualTo(Appointments.KEY_OCCURRED, false);
-        }
-        query.whereEqualTo(Appointments.KEY_BOOKER, ParseUser.getCurrentUser().getUsername());
+        else
+            query.whereEqualTo(Appointments.KEY_OCCURRED, true);
         query.addDescendingOrder("createdAt");
         query.findInBackground(new FindCallback<Appointments>() {
             @Override

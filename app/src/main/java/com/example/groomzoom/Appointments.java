@@ -18,7 +18,6 @@ import java.util.Locale;
 public class Appointments extends ParseObject {
 
     public static final String KEY_PROFILEPIC = "profilePic";
-    public static final String KEY_BARBER = "barber";
     public static final String KEY_DATE = "date";
     public static final String KEY_PRICE = "price";
     public static final String KEY_OCCURRED = "occurred";
@@ -26,11 +25,12 @@ public class Appointments extends ParseObject {
     public static final String KEY_SERVICES = "servicesDone";
     public static final String KEY_BOOKER = "booker";
     public static final String KEY_RATING = "userRating";
-
+    public static final String KEY_BARBERPROFILEPIC = "barberProfilePic";
 
     public ParseFile getProfilePic() {
         return getParseFile(KEY_PROFILEPIC);
     }
+    public ParseFile getBarberProfilePic(){ return getParseFile(KEY_BARBERPROFILEPIC); }
 
     public void setProfilePic(ParseFile parseFile) {
         put(KEY_PROFILEPIC, parseFile);
@@ -43,12 +43,6 @@ public class Appointments extends ParseObject {
         put(KEY_USER, user);
     }
 
-    public boolean isBarber(){
-        return getBoolean(KEY_BARBER);
-    }
-    public void setBarber(boolean isBarber){
-        put(KEY_BARBER, isBarber);
-    }
 
     public String[] getDate() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy", Locale.ENGLISH);
@@ -81,10 +75,10 @@ public class Appointments extends ParseObject {
         return getList(KEY_SERVICES);
     }
 
-    public String getBooker(){
-        return getString(KEY_BOOKER);
+    public ParseUser getBooker(){
+        return getParseUser(KEY_BOOKER);
     }
-    public void setBooker(String booker){
+    public void setBooker(ParseUser booker){
         put(KEY_BOOKER, booker);
     }
 

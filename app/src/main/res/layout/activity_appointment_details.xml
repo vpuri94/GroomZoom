@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_margin="6dp">
 
     <TextView
         android:id="@+id/tvApptname"
@@ -52,21 +53,34 @@
 
     <ImageView
         android:id="@+id/ivProfilepic"
-        android:layout_width="163dp"
-        android:layout_height="180dp"
+        android:layout_width="0dp"
+        android:layout_height="201dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.987"
-        app:layout_constraintStart_toEndOf="@+id/tvPrice"
-        tools:layout_editor_absoluteY="2dp"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/tvDate"
+        tools:layout_editor_absoluteY="3dp"
         tools:srcCompat="@tools:sample/avatars" />
 
     <RatingBar
         android:id="@+id/rbAppt"
+        style="@style/Widget.AppCompat.RatingBar.Indicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:clickable="false"
         android:numStars="5"
         android:stepSize="0.5"
         app:layout_constraintTop_toBottomOf="@+id/RATING"
         tools:layout_editor_absoluteX="0dp" />
+
+    <TextView
+        android:id="@+id/tvServicesList"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@+id/SERVICES"
+        tools:layout_editor_absoluteX="0dp"
+        tools:text="Haircut" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
