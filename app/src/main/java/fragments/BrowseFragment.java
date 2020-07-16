@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -58,7 +59,12 @@ public class BrowseFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         rvUsers = view.findViewById(R.id.rvUsers);
         allBrowse = new ArrayList<>();
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
+        dividerItemDecoration.setDrawable(getResources().getDrawable(R.drawable.recyclerview_divider));
+        rvUsers.addItemDecoration(dividerItemDecoration);
         browseAdapter = new BrowseAdapter(getContext(), allBrowse);
+
+
         rvUsers.setAdapter(browseAdapter);
         rvUsers.setLayoutManager(new LinearLayoutManager(getContext()));
 

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -86,6 +87,9 @@ public static final String TAG = "AppointmentFragment";
         rvAppointments = view.findViewById(R.id.rvAppointments);
         allAppointments = new ArrayList<>();
         adapter = new AppointmentsAdapter(getContext(), allAppointments);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
+        dividerItemDecoration.setDrawable(getResources().getDrawable(R.drawable.recyclerview_divider));
+        rvAppointments.addItemDecoration(dividerItemDecoration);
         rvAppointments.setAdapter(adapter);
         rvAppointments.setLayoutManager(new LinearLayoutManager(getContext()));
 
