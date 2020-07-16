@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/RelativeLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:layout_margin="8dp">
 
     <TextView
@@ -24,28 +24,20 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/tvName"
         android:layout_alignParentStart="true"
-        android:layout_marginStart="2dp"
-        android:layout_marginTop="1dp"
+        android:layout_marginStart="1dp"
+        android:layout_marginTop="2dp"
         tools:text="Haircut" />
 
-    <TextView
-        android:id="@+id/tvPrice"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tvService"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="1dp"
-        android:layout_marginTop="3dp"
-        tools:text="$20" />
-
     <RatingBar
-        android:id="@+id/ratingBar2"
+        android:id="@+id/rbRating"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/textView8"
         android:layout_alignParentStart="true"
-        android:layout_marginStart="-1dp"
-        android:layout_marginTop="1dp" />
+        android:layout_marginStart="2dp"
+        android:layout_marginTop="-7dp"
+        android:numStars="5"
+        android:stepSize="0.5" />
 
     <TextView
         android:id="@+id/textView8"
@@ -53,19 +45,20 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/tvPrice"
         android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
         android:layout_marginStart="2dp"
-        android:layout_marginTop="2dp"
+        android:layout_marginTop="47dp"
         android:text="RATING:"
         android:textStyle="bold" />
 
     <ImageView
         android:id="@+id/ivProfile"
-        android:layout_width="155dp"
-        android:layout_height="150dp"
+        android:layout_width="wrap_content"
+        android:layout_height="116dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_marginStart="1dp"
         android:layout_marginEnd="0dp"
-        android:layout_toEndOf="@+id/ratingBar2"
+        android:layout_toEndOf="@+id/rbRating"
         tools:srcCompat="@tools:sample/avatars" />
 </RelativeLayout>
