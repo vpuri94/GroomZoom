@@ -5,8 +5,13 @@ import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 
+
+import org.parceler.Parcel;
+
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 @ParseClassName("Appointments")
@@ -18,8 +23,10 @@ public class Appointments extends ParseObject {
     public static final String KEY_PRICE = "price";
     public static final String KEY_OCCURRED = "occurred";
     public static final String KEY_USER = "user";
-    public static final String KEY_SERVICE = "service";
+    public static final String KEY_SERVICES = "servicesDone";
     public static final String KEY_BOOKER = "booker";
+    public static final String KEY_RATING = "userRating";
+
 
     public ParseFile getProfilePic() {
         return getParseFile(KEY_PROFILEPIC);
@@ -70,12 +77,10 @@ public class Appointments extends ParseObject {
     public void setOccurred(boolean occurred){
         put(KEY_OCCURRED, occurred);
     }
-    public String getService(){
-        return getString(KEY_SERVICE);
+    public List<String> getServices(){
+        return getList(KEY_SERVICES);
     }
-    public void setService(String service){
-        put(KEY_SERVICE, service);
-    }
+
     public String getBooker(){
         return getString(KEY_BOOKER);
     }
@@ -83,7 +88,12 @@ public class Appointments extends ParseObject {
         put(KEY_BOOKER, booker);
     }
 
-
+    public double getRating(){
+        return getDouble(KEY_RATING);
+    }
+    public void setRating(double rating){
+        put(KEY_RATING, rating);
+    }
 
 
 

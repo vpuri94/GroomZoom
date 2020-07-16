@@ -1,6 +1,7 @@
 package com.example.groomzoom;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,9 @@ import com.bumptech.glide.Glide;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 
+import org.parceler.Parcels;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class AppointmentsAdapter extends RecyclerView.Adapter<AppointmentsAdapter.ViewHolder> {
@@ -50,7 +54,7 @@ public class AppointmentsAdapter extends RecyclerView.Adapter<AppointmentsAdapte
         return appointments.size();
     }
 
-    class ViewHolder extends  RecyclerView.ViewHolder{
+    public class ViewHolder extends  RecyclerView.ViewHolder implements View.OnClickListener{
 
         private TextView tvUsername;
         private TextView tvDate;
@@ -65,6 +69,7 @@ public class AppointmentsAdapter extends RecyclerView.Adapter<AppointmentsAdapte
             tvService = itemView.findViewById(R.id.tvService);
             tvPrice = itemView.findViewById(R.id.tvPrice);
             ivProfilePic = itemView.findViewById(R.id.ivProfilePic);
+            itemView.setOnClickListener(this);
         }
 
         public void bind(Appointments appointment) throws ParseException {
@@ -72,12 +77,13 @@ public class AppointmentsAdapter extends RecyclerView.Adapter<AppointmentsAdapte
             boolean isBarber;
             isBarber = appointment.getBoolean("barber");
             tvUsername.setText("Appointment with: " + appointment.getUser().fetchIfNeeded().getUsername());
+
             if(isBarber){
-                tvService.setText("Service requested:  " + appointment.getService());
+                tvService.setText("Service requested:  " + servicePreview(appointment.getServices()));
 
             }
             else{
-                tvService.setText("Service you wanted: " + appointment.getService());
+                tvService.setText("Services you wanted: " + servicePreview(appointment.getServices()));
 
             }
             tvDate.setText("Date of appointment: " + appointment.getDate()[0] + " @ "+ appointment.getDate()[1]);
@@ -88,6 +94,35 @@ public class AppointmentsAdapter extends RecyclerView.Adapter<AppointmentsAdapte
             }
 
         }
+
+        @Override
+        public void onClick(View view) {
+            // gets item position
+            int position  = getAdapterPosition();
+            // make sure the position is valid, i.e actually exists in the view
+            if(position != RecyclerView.NO_POSITION){
+                // get the movie at the position, this wont work if the class is static
+                Appointments appointment = appointments.get(position);
+                // Create intent for new activity
+                Intent intent = new Intent(context, AppointmentDetailsActivity.class);
+                // serialize the movie using parceler, use its short name as a key
+                intent.putExtra(Appointments.class.getSimpleName(), Parcels.wrap(appointment));
+                // show the activity
+                context.startActivity(intent);
+            }
+        }
+
+
+        public String servicePreview(List<String> services){
+            String servPreview = "";
+            for(int x = 0; x < services.size() ; x++){
+                if(x > 1)
+                    break;
+                servPreview += services.get(x) + ", ";
+            }
+            return servPreview + "...";
+        }
+
     }
 
 }

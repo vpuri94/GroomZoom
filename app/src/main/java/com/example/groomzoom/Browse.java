@@ -4,6 +4,8 @@ import com.parse.ParseClassName;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
 
+import java.util.List;
+
 @ParseClassName("Browse")
 public class Browse extends ParseObject {
 public static final String KEY_PROFILEPIC = "profilePic";
@@ -52,5 +54,9 @@ public ParseFile getProfilePic(){
 public void setProfilePic(ParseFile profilePic){
     put(KEY_PROFILEPIC, profilePic);
 }
+    public List<String> getServices(){
+        return getList(KEY_SERVICES);
+    }
+
 
 }

@@ -27,17 +27,19 @@ import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
+import org.parceler.Parcel;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class AppointmentFragment extends Fragment {
 
 
-private RecyclerView rvAppointments;
-private AppointmentsAdapter adapter;
-private List<Appointments> allAppointments;
-private String[] apptType = {"UPCOMING APPOINTMENTS", "PREVIOUS APPOINTMENTS"};
-private boolean upcoming = true;
+public RecyclerView rvAppointments;
+public AppointmentsAdapter adapter;
+public List<Appointments> allAppointments;
+public String[] apptType = {"UPCOMING APPOINTMENTS", "PREVIOUS APPOINTMENTS"};
+public boolean upcoming = true;
 
 public static final String TAG = "AppointmentFragment";
 
@@ -95,7 +97,7 @@ public static final String TAG = "AppointmentFragment";
 
     }
 
-    private void queryAppointments() {
+    public void queryAppointments() {
         allAppointments.clear();
         ParseQuery<Appointments> query = ParseQuery.getQuery(Appointments.class);
         query.include(Appointments.KEY_USER);
@@ -115,7 +117,7 @@ public static final String TAG = "AppointmentFragment";
                 }
                 for(Appointments appointment : appointments){
                     try {
-                        Log.i(TAG, "Appointments: " + appointment.getService() + ", username: " + appointment.getUser().fetchIfNeeded().getUsername());
+                        Log.i(TAG, "Appointments: " + appointment.getServices() + ", username: " + appointment.getUser().fetchIfNeeded().getUsername());
                     } catch (ParseException ex) {
                         ex.printStackTrace();
                     }
