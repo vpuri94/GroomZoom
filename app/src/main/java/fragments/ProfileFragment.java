@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.groomzoom.Maps;
 import com.example.groomzoom.Profile;
 import com.example.groomzoom.LoginActivity;
 import com.example.groomzoom.R;
@@ -87,7 +88,7 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 // ADD INTENT TO GOOGLE MAPS PAGE HERE
-                return;
+                modifyAddress();
             }
         });
 
@@ -124,7 +125,6 @@ public class ProfileFragment extends Fragment {
             serviceList.add(String.valueOf(cbWax.getText()));
         if(cbBlowdry.isChecked())
             serviceList.add(String.valueOf(cbBlowdry.getText()));
-
         myself.put("services", serviceList);
         Toast.makeText(getContext(), "SAVED CHANGES TO YOUR ACCOUNT", Toast.LENGTH_LONG).show();
         myself.saveInBackground();
@@ -135,6 +135,11 @@ public class ProfileFragment extends Fragment {
     private void goToStartScreen() {
         Intent goToStartScreen = new Intent(this.getContext(), LoginActivity.class);
         startActivity(goToStartScreen);
+    }
+
+    private void modifyAddress(){
+        Intent googleMaps = new Intent(this.getContext(), Maps.class);
+        startActivity(googleMaps);
     }
 
     private void setCheckBoxes() {
