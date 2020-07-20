@@ -20,9 +20,13 @@ import com.bumptech.glide.Glide;
 import com.example.groomzoom.Profile;
 import com.example.groomzoom.LoginActivity;
 import com.example.groomzoom.R;
+import com.parse.Parse;
 import com.parse.ParseClassName;
 import com.parse.ParseFile;
+import com.parse.ParseObject;
 import com.parse.ParseUser;
+
+import org.json.JSONArray;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +44,7 @@ public class ProfileFragment extends Fragment {
     private CheckBox cbWax;
     private CheckBox cbBlowdry;
     private Button btnService;
-
+    private ParseUser myself = ParseUser.getCurrentUser();
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -77,8 +81,8 @@ public class ProfileFragment extends Fragment {
         btnModifyAddress = view.findViewById(R.id.btnModifyAddress);
         ivPfp = view.findViewById(R.id.ivPfp);
 
-        tvMyName.setText(ParseUser.getCurrentUser().getUsername());
-        tvAddress.setText(ParseUser.getCurrentUser().getString("address"));
+        tvMyName.setText(myself.getUsername());
+        tvAddress.setText(myself.getString("address"));
         btnModifyAddress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -87,9 +91,8 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-        ParseFile image = ParseUser.getCurrentUser().getParseFile("profilePic");
+        ParseFile image = myself.getParseFile("profilePic");
         if (image != null) {
-            Toast.makeText(getContext(), "Not null", Toast.LENGTH_SHORT).show();
             Glide.with(getContext()).load(image.getUrl()).into(ivPfp);
         }
 
@@ -98,6 +101,7 @@ public class ProfileFragment extends Fragment {
         cbColor = view.findViewById(R.id.cbColor);
         cbWax = view.findViewById(R.id.cbWax);
         cbBlowdry = view.findViewById(R.id.cbBlowdry);
+        setCheckBoxes();
         btnService = view.findViewById(R.id.btnService);
         btnService.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,6 +109,7 @@ public class ProfileFragment extends Fragment {
                 serviceChanges(view);
             }
         });
+        myself.saveInBackground();
     }
 
     public void serviceChanges(View v){
@@ -119,9 +124,10 @@ public class ProfileFragment extends Fragment {
             serviceList.add(String.valueOf(cbWax.getText()));
         if(cbBlowdry.isChecked())
             serviceList.add(String.valueOf(cbBlowdry.getText()));
-        ParseUser.getCurrentUser().addAllUnique("services", serviceList);
-        Toast.makeText(getContext(), "SAVED CHANGES TO YOUR ACCOUNT", Toast.LENGTH_LONG).show();
 
+        myself.put("services", serviceList);
+        Toast.makeText(getContext(), "SAVED CHANGES TO YOUR ACCOUNT", Toast.LENGTH_LONG).show();
+        myself.saveInBackground();
     }
 
 
@@ -131,4 +137,19 @@ public class ProfileFragment extends Fragment {
         startActivity(goToStartScreen);
     }
 
+    private void setCheckBoxes() {
+        List<CheckBox> myServices = new ArrayList<CheckBox>();
+        myServices.add(cbHaircut);
+        myServices.add(cbBeard);
+        myServices.add(cbColor);
+        myServices.add(cbWax);
+        myServices.add(cbBlowdry);
+
+        List<String> myPrefs = myself.getList("services");
+        for(int x = 0; x < myServices.size(); x++){
+            if(myPrefs.contains(String.valueOf(myServices.get(x).getText()))){
+                myServices.get(x).setChecked(true);
+            }
+        }
+    }
 }
