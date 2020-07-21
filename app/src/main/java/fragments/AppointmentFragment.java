@@ -16,19 +16,13 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-import android.widget.Toast;
-
 import com.example.groomzoom.Appointments;
 import com.example.groomzoom.AppointmentsAdapter;
 import com.example.groomzoom.R;
 import com.parse.FindCallback;
-import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
-
-import org.parceler.Parcel;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,6 +34,8 @@ public AppointmentsAdapter adapter;
 public List<Appointments> allAppointments;
 public String[] apptType = {"UPCOMING APPOINTMENTS", "PREVIOUS APPOINTMENTS"};
 public boolean upcoming = true;
+public String barberKey = "barber";
+public String createdKey = "createdAt";
 
 public static final String TAG = "AppointmentFragment";
 
@@ -47,11 +43,9 @@ public static final String TAG = "AppointmentFragment";
         // Required empty public constructor
     }
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
@@ -98,18 +92,19 @@ public static final String TAG = "AppointmentFragment";
     }
 
     public void queryAppointments() {
+        ParseUser currentUser = ParseUser.getCurrentUser();
         allAppointments.clear();
         ParseQuery<Appointments> query = ParseQuery.getQuery(Appointments.class);
         query.include(Appointments.KEY_USER);
-        if(ParseUser.getCurrentUser().getBoolean("barber"))
-            query.whereEqualTo(Appointments.KEY_USER, ParseUser.getCurrentUser());
+        if(currentUser.getBoolean(barberKey))
+            query.whereEqualTo(Appointments.KEY_USER, currentUser);
         else
-            query.whereEqualTo(Appointments.KEY_BOOKER, ParseUser.getCurrentUser());
+            query.whereEqualTo(Appointments.KEY_BOOKER, currentUser);
         if(upcoming)
             query.whereEqualTo(Appointments.KEY_OCCURRED, false);
         else
             query.whereEqualTo(Appointments.KEY_OCCURRED, true);
-        query.addDescendingOrder("createdAt");
+        query.addDescendingOrder(createdKey);
         query.findInBackground(new FindCallback<Appointments>() {
             @Override
             public void done(List<Appointments> appointments, ParseException e) {
@@ -125,7 +120,6 @@ public static final String TAG = "AppointmentFragment";
                 }
                 allAppointments.addAll(appointments);
                 adapter.notifyDataSetChanged();
-
             }
         });
     }

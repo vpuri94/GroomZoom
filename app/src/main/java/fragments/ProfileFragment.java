@@ -2,11 +2,9 @@ package fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,20 +13,13 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.bumptech.glide.Glide;
-import com.example.groomzoom.Maps;
-import com.example.groomzoom.Profile;
 import com.example.groomzoom.LoginActivity;
+import com.example.groomzoom.MapsActivity;
 import com.example.groomzoom.R;
-import com.parse.Parse;
 import com.parse.ParseClassName;
 import com.parse.ParseFile;
-import com.parse.ParseObject;
 import com.parse.ParseUser;
-
-import org.json.JSONArray;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,17 +37,18 @@ public class ProfileFragment extends Fragment {
     private CheckBox cbBlowdry;
     private Button btnService;
     private ParseUser myself = ParseUser.getCurrentUser();
+    private String saveChangesMsg = "SAVED CHANGES TO YOUR ACCOUNT";
+    private String servicesKey = "services";
+    private String addressKey = "address";
+    private String profilePicKey = "profilePic";
 
     public ProfileFragment() {
         // Required empty public constructor
     }
 
-
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
@@ -81,18 +73,16 @@ public class ProfileFragment extends Fragment {
         tvAddress = view.findViewById(R.id.tvAddress);
         btnModifyAddress = view.findViewById(R.id.btnModifyAddress);
         ivPfp = view.findViewById(R.id.ivPfp);
-
         tvMyName.setText(myself.getUsername());
-        tvAddress.setText(myself.getString("address"));
+        tvAddress.setText(myself.getString(addressKey));
         btnModifyAddress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // ADD INTENT TO GOOGLE MAPS PAGE HERE
                 modifyAddress();
             }
         });
 
-        ParseFile image = myself.getParseFile("profilePic");
+        ParseFile image = myself.getParseFile(profilePicKey);
         if (image != null) {
             Glide.with(getContext()).load(image.getUrl()).into(ivPfp);
         }
@@ -103,6 +93,7 @@ public class ProfileFragment extends Fragment {
         cbWax = view.findViewById(R.id.cbWax);
         cbBlowdry = view.findViewById(R.id.cbBlowdry);
         setCheckBoxes();
+
         btnService = view.findViewById(R.id.btnService);
         btnService.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -125,8 +116,8 @@ public class ProfileFragment extends Fragment {
             serviceList.add(String.valueOf(cbWax.getText()));
         if(cbBlowdry.isChecked())
             serviceList.add(String.valueOf(cbBlowdry.getText()));
-        myself.put("services", serviceList);
-        Toast.makeText(getContext(), "SAVED CHANGES TO YOUR ACCOUNT", Toast.LENGTH_LONG).show();
+        myself.put(servicesKey, serviceList);
+        Toast.makeText(getContext(), saveChangesMsg, Toast.LENGTH_LONG).show();
         myself.saveInBackground();
     }
 
@@ -138,7 +129,7 @@ public class ProfileFragment extends Fragment {
     }
 
     private void modifyAddress(){
-        Intent googleMaps = new Intent(this.getContext(), Maps.class);
+        Intent googleMaps = new Intent(this.getContext(), MapsActivity.class);
         startActivity(googleMaps);
     }
 
@@ -150,7 +141,7 @@ public class ProfileFragment extends Fragment {
         myServices.add(cbWax);
         myServices.add(cbBlowdry);
 
-        List<String> myPrefs = myself.getList("services");
+        List<String> myPrefs = myself.getList(servicesKey);
         for(int x = 0; x < myServices.size(); x++){
             if(myPrefs.contains(String.valueOf(myServices.get(x).getText()))){
                 myServices.get(x).setChecked(true);

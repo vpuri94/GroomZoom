@@ -7,25 +7,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.bumptech.glide.Glide;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
-
 import org.parceler.Parcels;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class AppointmentsAdapter extends RecyclerView.Adapter<AppointmentsAdapter.ViewHolder> {
 
+
     private Context context;
     private List<Appointments> appointments;
-    private String TAG = "AppointmentsAdapter";
+    String costMsg = "Cost: $";
+    String requestMsg = "Service requested:  ";
+    String wantMsg = "Services you wanted: ";
+    String barberKey = "barber";
 
     public AppointmentsAdapter(Context context, List<Appointments> appointments) {
         this.context = context;
@@ -76,17 +75,17 @@ public class AppointmentsAdapter extends RecyclerView.Adapter<AppointmentsAdapte
         public void bind(Appointments appointment) throws ParseException {
             // Bind the post data to the view elements
             boolean isBarber;
-            isBarber = ParseUser.getCurrentUser().getBoolean("barber");
+            isBarber = ParseUser.getCurrentUser().getBoolean(barberKey);
             if(isBarber) {
-                tvUsername.setText("Appointment with: " + appointment.getBooker().fetchIfNeeded().getUsername());
-                tvService.setText("Service requested:  " + servicePreview(appointment.getServices()));
+                tvUsername.setText(AppointmentDetailsActivity.appointmentMsg + appointment.getBooker().fetchIfNeeded().getUsername());
+                tvService.setText(requestMsg + servicePreview(appointment.getServices()));
             }
             else{
-                tvUsername.setText("Appointment with: " + appointment.getUser().fetchIfNeeded().getUsername());
-                tvService.setText("Services you wanted: " + servicePreview(appointment.getServices()));
+                tvUsername.setText(AppointmentDetailsActivity.appointmentMsg + appointment.getUser().fetchIfNeeded().getUsername());
+                tvService.setText(wantMsg + servicePreview(appointment.getServices()));
             }
-            tvDate.setText("Date of appointment: " + appointment.getDate()[0] + " @ "+ appointment.getDate()[1]);
-            tvPrice.setText("Cost: $" + Integer.toString(appointment.getPrice()));
+            tvDate.setText(AppointmentDetailsActivity.dateMsg + appointment.getDate()[0] + " @ "+ appointment.getDate()[1]);
+            tvPrice.setText(costMsg + Integer.toString(appointment.getPrice()));
             ParseFile image;
             if(isBarber)
                 image = appointment.getProfilePic();
@@ -95,7 +94,6 @@ public class AppointmentsAdapter extends RecyclerView.Adapter<AppointmentsAdapte
             if (image != null) {
                 Glide.with(context).load(image.getUrl()).into(ivProfilePic);
             }
-
         }
 
         @Override
@@ -115,7 +113,6 @@ public class AppointmentsAdapter extends RecyclerView.Adapter<AppointmentsAdapte
             }
         }
 
-
         public String servicePreview(List<String> services){
             String servPreview = "";
             for(int x = 0; x < services.size() ; x++){
@@ -125,7 +122,5 @@ public class AppointmentsAdapter extends RecyclerView.Adapter<AppointmentsAdapte
             }
             return servPreview + "...";
         }
-
     }
-
 }

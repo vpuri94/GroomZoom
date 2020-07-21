@@ -1,34 +1,32 @@
 package com.example.groomzoom;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.bumptech.glide.Glide;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
-
 import org.parceler.Parcels;
-
 import java.util.List;
 
 public class AppointmentDetailsActivity extends AppCompatActivity {
     // the appointment to display
     Appointments appointment;
-    TextView tvApptname;
-    TextView tvPrice;
-    TextView tvDate;
-    ImageView ivProfilepic;
-    RatingBar rbAppt;
-    TextView tvServicesList;
+    public static String appointmentMsg = "Appointment with: ";
+    public static String dateMsg = "Date of appt: ";
     boolean isBarber;
+    ImageView ivProfilepic;
+    public String priceMsg = "Price of appt. : $";
+    RatingBar rbAppt;
+    TextView tvApptname;
+    TextView tvDate;
+    TextView tvPrice;
+    TextView tvServicesList;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,20 +43,20 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
         isBarber = ParseUser.getCurrentUser().getBoolean("barber");
         if(isBarber) {
             try {
-                tvApptname.setText("Appointment with: " + appointment.getBooker().fetchIfNeeded().getUsername());
+                tvApptname.setText(appointmentMsg + appointment.getBooker().fetchIfNeeded().getUsername());
             } catch (ParseException e) {
                 e.printStackTrace();
             }
         }
         else {
             try {
-                tvApptname.setText("Appointment with: " + appointment.getUser().fetchIfNeeded().getUsername());
+                tvApptname.setText(appointmentMsg + appointment.getUser().fetchIfNeeded().getUsername());
             } catch (ParseException e) {
                 e.printStackTrace();
             }
         }
-        tvPrice.setText("Price of appt. : $" + appointment.getPrice());
-        tvDate.setText("Date of appt: " + appointment.getDate()[0] + " @ " + appointment.getDate()[1]);
+        tvPrice.setText(priceMsg + appointment.getPrice());
+        tvDate.setText(dateMsg + appointment.getDate()[0] + " @ " + appointment.getDate()[1]);
         ParseFile image;
         if(isBarber)
             image = appointment.getProfilePic();
