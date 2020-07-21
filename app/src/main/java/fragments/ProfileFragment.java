@@ -22,9 +22,12 @@ import com.parse.ParseFile;
 import com.parse.ParseUser;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @ParseClassName("User")
 public class ProfileFragment extends Fragment {
+    private static final int RESULT_OK = 23;
+    public static final int requestCodeNum = 999;
     protected Button btnSignout;
     private TextView tvMyName;
     private TextView tvAddress;
@@ -130,8 +133,19 @@ public class ProfileFragment extends Fragment {
 
     private void modifyAddress(){
         Intent googleMaps = new Intent(this.getContext(), MapsActivity.class);
-        startActivity(googleMaps);
+        startActivityForResult(googleMaps, requestCodeNum);
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if(requestCode == requestCodeNum && resultCode == RESULT_OK){
+            String result = data.getStringExtra(addressKey);
+            tvAddress.setText(result);
+            myself.put(addressKey, result);
+            myself.saveInBackground();
+        }
+    }
+
 
     private void setCheckBoxes() {
         List<CheckBox> myServices = new ArrayList<CheckBox>();
