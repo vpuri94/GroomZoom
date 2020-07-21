@@ -53,21 +53,25 @@ Uber for haircut/beard grooming, so that you can have a barber come to your hous
 
 **Required Must-have Stories**
 
-* User can create a new account (2 types, barber or customer)
-* User can login
-* Customer can share pictures of their hair, and face profiles (for beard work)
-* User can share location
-* User can post a brief description of what kind of service they are looking for
-* Barber can post the services they provide, their location and how far they are willing to go
-* Barber can post price of specific services
-* Client can scroll through list of available barbers and click on the services they offer, their experience, the tools they use, and book an appointment for them to come for same day or another day
+* [x] User can create a new account (2 types, barber or customer)
+* [x] User can login
+* [ ] Customer can share pictures of their hair, and face profiles (for beard work)
+* [x] User can share location
+* [x] User can post a brief description of what kind of service they are looking for
+* [ ]  Barber can post the services they provide, their location and how far they are willing to go
+* [x] Barber can post price of specific services
+* [x] Client can scroll through list of available barbers and click on the services they offer, their experience, the tools they use, and book an appointment for them to come for same day or another day
+* [ ] Use fade in/out animation when scrolling through pages
+* [ ] Use filtration/sorting algorithm when displaying barbers on browse screen
+* [ ] Use gesture recognizer for pinch to scale when looking at picture of clients
 
 **Optional Nice-to-have Stories**
 
-* Live tracking of barbers when an "order" is confirmed (like how you can track an Ubereats order when its on the way)
-* Ability for barber to post pictures of their equipment
-* Ability for profile pictures
-* Ability for messaging between barbers and clients
+* [ ] Live tracking of barbers when an "order" is confirmed (like how you can track an Ubereats order when its on the way)
+* [ ] Ability for barber to post pictures of their equipment
+* [ ] Ability for profile pictures
+* [ ] Ability for messaging between barbers and clients
+* [ ] Ability for maps feature to default to automatically get your location and reccoment it as your address
 
 ### 2. Screen Archetypes
 
@@ -128,20 +132,17 @@ Uber for haircut/beard grooming, so that you can have a barber come to your hous
 - Work on the ratings/reviews page and sync it with another Parse database
 - Finish working on camera or google maps sdk to app
 - Attempt to finish out the My Profile page
-
-## Week three
 - Implement the sorting/filtering barber algorithm
 - Finish both the google maps and Camera feature in the my profile tab
+
+## Week three
 - Begin adding visual polish
 - Begin adding an animation
 - Begin adding a gesture Recognizer
 - Ensure required stories are done by end of week three
+- Finish all visual features/external visual library
 
 ## Week four
-- Finish adding visual polish
-- Finish adding animation
-- Finish adding gesture recognizer
-- Bring in external visual library
 - Work on any stretch features after
 
 ## Wireframes
