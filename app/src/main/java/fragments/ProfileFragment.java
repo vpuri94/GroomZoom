@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.bumptech.glide.Glide;
+import com.example.groomzoom.GalleryActivity;
 import com.example.groomzoom.LoginActivity;
 import com.example.groomzoom.MapsActivity;
 import com.example.groomzoom.R;
@@ -39,6 +40,7 @@ public class ProfileFragment extends Fragment {
     private CheckBox cbWax;
     private CheckBox cbBlowdry;
     private Button btnService;
+    private Button btnPics;
     private ParseUser myself = ParseUser.getCurrentUser();
     private String saveChangesMsg = "SAVED CHANGES TO YOUR ACCOUNT";
     private String servicesKey = "services";
@@ -90,6 +92,14 @@ public class ProfileFragment extends Fragment {
             Glide.with(getContext()).load(image.getUrl()).into(ivPfp);
         }
 
+        btnPics = view.findViewById(R.id.btnPics);
+        btnPics.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                pictureChanges();
+            }
+        });
+
         cbHaircut = view.findViewById(R.id.cbHaircut);
         cbBeard = view.findViewById(R.id.cbBeard);
         cbColor = view.findViewById(R.id.cbColor);
@@ -134,6 +144,11 @@ public class ProfileFragment extends Fragment {
     private void modifyAddress(){
         Intent googleMaps = new Intent(this.getContext(), MapsActivity.class);
         startActivityForResult(googleMaps, requestCodeNum);
+    }
+
+    private void pictureChanges(){
+        Intent changePictures = new Intent(this.getContext(), GalleryActivity.class);
+        startActivity(changePictures);
     }
 
     @Override

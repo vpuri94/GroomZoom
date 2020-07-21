@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".GalleryActivity">
+
+    <ImageButton
+        android:id="@+id/btnLeftPic"
+        android:layout_width="150dp"
+        android:layout_height="190dp"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:scaleType="fitCenter"
+        android:src="@drawable/leftpic" />
+
+    <ImageButton
+        android:id="@+id/btnFrontPic"
+        android:layout_width="134dp"
+        android:layout_height="188dp"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="151dp"
+        android:layout_marginTop="176dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/frontpic" />
+
+    <ImageButton
+        android:id="@+id/btnRightPic"
+        android:layout_width="124dp"
+        android:layout_height="187dp"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="2dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/rightpic" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btnFrontPic"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="31dp"
+        android:layout_marginEnd="161dp"
+        android:layout_marginBottom="154dp"
+        android:text="Front Profile"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btnRightPic"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="34dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="151dp"
+        android:text="Right Profile"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btnLeftPic"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="298dp"
+        android:layout_marginBottom="155dp"
+        android:text="Left Profile"
+        android:textSize="18sp" />
+</RelativeLayout>
