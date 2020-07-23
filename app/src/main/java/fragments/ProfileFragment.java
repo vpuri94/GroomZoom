@@ -21,6 +21,8 @@ import com.example.groomzoom.R;
 import com.parse.ParseClassName;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -159,6 +161,7 @@ public class ProfileFragment extends Fragment {
             myself.put(addressKey, result);
             myself.saveInBackground();
         }
+
     }
 
 

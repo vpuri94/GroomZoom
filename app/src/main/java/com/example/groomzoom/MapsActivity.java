@@ -74,7 +74,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Intent i = new Intent();
                 i.putExtra("address", addressResult);
                 setResult(23, i);
-
                 finish();
             }
         });

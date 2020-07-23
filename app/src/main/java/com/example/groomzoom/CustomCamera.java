@@ -6,7 +6,9 @@ import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.ImageFormat;
 import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
@@ -15,9 +17,12 @@ import android.hardware.camera2.CameraDevice;
 import android.hardware.camera2.CameraManager;
 import android.hardware.camera2.CameraMetadata;
 import android.hardware.camera2.CaptureRequest;
+import android.hardware.camera2.TotalCaptureResult;
 import android.hardware.camera2.params.StreamConfigurationMap;
+import android.media.Image;
 import android.media.ImageReader;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.util.Size;
@@ -28,8 +33,21 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.parse.ParseException;
+import com.parse.ParseFile;
+import com.parse.ParseUser;
+import com.parse.SaveCallback;
+
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class CustomCamera extends AppCompatActivity {
 
@@ -55,8 +73,8 @@ public class CustomCamera extends AppCompatActivity {
     private File file;
     Handler mBackgroundHandler;
     HandlerThread mBackgroundThread;
-
-
+    String parseKey;
+    String pictureMsg = "Take a picture with you face the ";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,13 +86,22 @@ public class CustomCamera extends AppCompatActivity {
         button = (Button) findViewById(R.id.button_capture);
         textureView.setSurfaceTextureListener(textureListener);
 
+        Intent intent = getIntent();
+        final String direction = intent.getStringExtra("direction");
+        Toast.makeText(getApplicationContext(), pictureMsg + direction, Toast.LENGTH_SHORT).show();
+
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                takePicture();
+                try {
+                    takePicture(direction);
+                } catch (CameraAccessException e) {
+                    e.printStackTrace();
+                }
+
+
             }
         });
-
 
     }
 
@@ -179,7 +206,7 @@ private final CameraDevice.StateCallback stateCallback = new CameraDevice.StateC
     private void openCamera() throws CameraAccessException {
         CameraManager manager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
 
-        cameraId = manager.getCameraIdList()[0];
+        cameraId = manager.getCameraIdList()[1];
 
         CameraCharacteristics characteristics = manager.getCameraCharacteristics(cameraId);
         StreamConfigurationMap map = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
@@ -199,7 +226,138 @@ private final CameraDevice.StateCallback stateCallback = new CameraDevice.StateC
 
     }
 
-    private void takePicture() {
+    private void takePicture(final String direction) throws CameraAccessException {
+        if(cameraDevice == null)
+            return;
+        CameraManager manager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
+        CameraCharacteristics characteristics = manager.getCameraCharacteristics(cameraDevice.getId());
+        Size[] jpegSizes = null;
+
+        jpegSizes = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP).getOutputSizes(ImageFormat.JPEG);
+
+        int width = 640;
+        int height = 480;
+
+        if(jpegSizes != null && jpegSizes.length > 0){
+            width = jpegSizes[0].getWidth();
+            height = jpegSizes[0].getHeight();
+        }
+        ImageReader reader = ImageReader.newInstance(width,height, ImageFormat.JPEG, 1);
+        List<Surface> outputSurfaces = new ArrayList<>(2);
+        outputSurfaces.add(reader.getSurface());
+
+        outputSurfaces.add(new Surface(textureView.getSurfaceTexture()));
+
+        final CaptureRequest.Builder captureBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_STILL_CAPTURE);
+
+        captureBuilder.addTarget(reader.getSurface());
+        captureBuilder.set(CaptureRequest.CONTROL_MODE,  CameraMetadata.CONTROL_MODE_AUTO);
+
+        int rotation = getWindowManager().getDefaultDisplay().getRotation();
+        captureBuilder.set(CaptureRequest.JPEG_ORIENTATION, ORIENTATIONS.get(rotation));
+
+        Long tsLong = System.currentTimeMillis() / 1000;
+        String ts = tsLong.toString();
+
+        file = new File(Environment.getDataDirectory() + "/" + ts + ".jpg");
+
+        ImageReader.OnImageAvailableListener readerListener = new ImageReader.OnImageAvailableListener() {
+            @Override
+            public void onImageAvailable(ImageReader imageReader) {
+                Image image = null;
+                image = imageReader.acquireLatestImage();
+                ByteBuffer buffer = image.getPlanes()[0].getBuffer();
+                byte[] bytes = new byte[buffer.capacity()];
+                buffer.get(bytes);
+                try {
+                    save(bytes);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }finally {
+                    if(image != null) {
+                        image.close();
+                    }
+                }
+                final ParseUser currentUser = ParseUser.getCurrentUser();
+                String username = currentUser.getUsername();
+                ParseFile newSelfie = null;
+                if(direction.equals("front")){
+                    newSelfie = new ParseFile(username + "frontSelfie.png", bytes);
+                    parseKey = "frontSelfie";
+                }
+                else if(direction.equals("left")){
+                    newSelfie = new ParseFile(username + "leftSelfie.png", bytes);
+                    parseKey = "leftSelfie";
+                }
+                else{
+                    newSelfie = new ParseFile(username + "rightSelfie.png", bytes);
+                    parseKey = "rightSelfie";
+                }
+                final ParseFile finalNewSelfie = newSelfie;
+                newSelfie.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        if(e == null){
+                            currentUser.put(parseKey, finalNewSelfie);
+                            currentUser.saveInBackground(new SaveCallback() {
+                                @Override
+                                public void done(ParseException e) {
+                                    if(e == null){
+                                        Toast.makeText(getApplicationContext(), "Updated!", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+                            Toast.makeText(getApplicationContext(), "Picture Updated !", Toast.LENGTH_SHORT).show();
+                        }else{
+                            Toast.makeText(getApplicationContext(), "error uploading", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+            }
+        };
+
+        reader.setOnImageAvailableListener(readerListener, mBackgroundHandler);
+        final CameraCaptureSession.CaptureCallback  captureListener = new CameraCaptureSession.CaptureCallback() {
+            @Override
+            public void onCaptureCompleted(@NonNull CameraCaptureSession session, CaptureRequest request,  TotalCaptureResult result) {
+                super.onCaptureCompleted(session, request, result);
+                try {
+                    createCameraPreview();
+                } catch (CameraAccessException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        };
+        cameraDevice.createCaptureSession(outputSurfaces, new CameraCaptureSession.StateCallback() {
+            @Override
+            public void onConfigured(CameraCaptureSession session) {
+                try {
+                    session.capture(captureBuilder.build(), captureListener, mBackgroundHandler);
+                } catch (CameraAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onConfigureFailed(CameraCaptureSession cameraCaptureSession) {
+
+            }
+        }, mBackgroundHandler);
+//        Intent i = new Intent();
+//        i.putExtra("imageAsBytes", imageToSend);
+//        i.putExtra("picture", file);
+//        setResult(RESULT_OK, i);
+//        finish();
+//        byte[] bArray = readFileToByteArray(file);
+//        Toast.makeText(getApplicationContext(), "byte array is " + file.length(), Toast.LENGTH_LONG).show();
+    }
+
+    private void save(byte[] bytes) throws IOException {
+        OutputStream outputStream = null;
+        outputStream = new FileOutputStream(file);
+        outputStream.write(bytes);
+        outputStream.close();
 
     }
 
@@ -245,5 +403,20 @@ private final CameraDevice.StateCallback stateCallback = new CameraDevice.StateC
         mBackgroundHandler = null;
 
 
+    }
+
+    private static byte[] readFileToByteArray(File file){
+        FileInputStream fis = null;
+        // Creating a byte array using the length of the file
+        // file.length returns long which is cast to int
+        byte[] bArray = new byte[(int) file.length()];
+        try{
+            fis = new FileInputStream(file);
+            fis.read(bArray);
+            fis.close();
+        }catch(IOException ioExp){
+            ioExp.printStackTrace();
+        }
+        return bArray;
     }
 }
