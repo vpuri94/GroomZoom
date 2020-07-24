@@ -55,7 +55,7 @@ Uber for haircut/beard grooming, so that you can have a barber come to your hous
 
 * [x] User can create a new account (2 types, barber or customer)
 * [x] User can login
-* [ ] Customer can share pictures of their hair, and face profiles (for beard work)
+* [x] Customer can share pictures of their hair, and face profiles (for beard work)
 * [x] User can share location
 * [x] User can post a brief description of what kind of service they are looking for
 * [ ]  Barber can post the services they provide, their location and how far they are willing to go

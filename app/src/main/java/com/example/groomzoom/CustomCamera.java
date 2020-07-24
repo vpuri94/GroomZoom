@@ -344,13 +344,6 @@ private final CameraDevice.StateCallback stateCallback = new CameraDevice.StateC
 
             }
         }, mBackgroundHandler);
-//        Intent i = new Intent();
-//        i.putExtra("imageAsBytes", imageToSend);
-//        i.putExtra("picture", file);
-//        setResult(RESULT_OK, i);
-//        finish();
-//        byte[] bArray = readFileToByteArray(file);
-//        Toast.makeText(getApplicationContext(), "byte array is " + file.length(), Toast.LENGTH_LONG).show();
     }
 
     private void save(byte[] bytes) throws IOException {

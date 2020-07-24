@@ -4,11 +4,18 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
+
+import com.parse.GetDataCallback;
+import com.parse.ParseException;
+import com.parse.ParseFile;
+import com.parse.ParseUser;
 
 import java.io.File;
 
@@ -48,6 +55,7 @@ public class GalleryActivity extends AppCompatActivity {
                 launchCameraActivity(rightKey);
             }
         });
+
     }
 
     private void launchCameraActivity(String key) {
@@ -63,10 +71,6 @@ public class GalleryActivity extends AppCompatActivity {
         if (requestCode == 69 && resultCode == RESULT_OK && data != null) {
             File pictureRetrieved = (File) data.getSerializableExtra("picture");
             Toast.makeText(getApplicationContext(), "File found was" + pictureRetrieved.getName(), Toast.LENGTH_LONG).show();
-            byte[] imageAsBytes = (byte[]) data.getByteArrayExtra("imageAsBytes");
-//            Log.i("Byte array", "byte array is size " + imageAsBytes.length);
-
-            //            Toast.makeText(getApplicationContext(), "bytes found was " + imageAsBytes.length, Toast.LENGTH_LONG).show();
         }
 
     }

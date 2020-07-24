@@ -20,6 +20,8 @@ import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -30,6 +32,7 @@ public class BrowseFragment extends Fragment {
     private BrowseAdapter browseAdapter;
     private List<Browse> allBrowse;
     private String TAG = "HI";
+    private ParseUser currentUser = ParseUser.getCurrentUser();
 
     public BrowseFragment() {
         // Required empty public constructor
@@ -65,7 +68,7 @@ public class BrowseFragment extends Fragment {
     private void queryBrowse() {
         ParseQuery<Browse> query = ParseQuery.getQuery(Browse.class);
         query.include(Browse.KEY_USERNAME);
-        if(ParseUser.getCurrentUser().getBoolean("barber"))
+        if(currentUser.getBoolean("barber"))
             query.whereEqualTo(Browse.KEY_BARBER, false);
         else
             query.whereEqualTo(Browse.KEY_BARBER, true);
@@ -83,4 +86,42 @@ public class BrowseFragment extends Fragment {
             }
         });
     }
+
+    private void sortBrowse(List<Browse> userList, boolean sortingByRating, boolean sortingByDistance){
+        List<Browse> newList = new ArrayList<>();
+        Collections.copy(newList, allBrowse);
+        if(sortingByRating){
+            newList = sortByRating(newList);
+        }
+
+        if(sortingByDistance){
+            newList = sortByDistance(newList);
+        }
+    }
+
+    private List<Browse> sortByDistance(List<Browse> newList) {
+        String myAddress = currentUser.getString("address");
+
+
+        return newList;
+    }
+
+    private List<Browse> sortByRating(List<Browse> newList) {
+        for(int x = 0; x < newList.size(); x++){
+            Browse min = newList.get(x);
+            int minId = x;
+            for(int y = x+1; y < newList.size(); y++){
+                if(newList.get(y).getRating() < min.getRating()){
+                    min = newList.get(y);
+                    minId = y;
+                }
+            }
+            Browse temp = newList.get(x);
+            newList.set(x, min);
+            newList.set(minId, temp);
+        }
+        return newList;
+    }
+
+
 }
