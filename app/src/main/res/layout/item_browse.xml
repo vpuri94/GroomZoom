@@ -71,6 +71,15 @@
         android:layout_marginStart="50dp"
         android:layout_marginTop="4dp"
         android:layout_toEndOf="@+id/tvName"
-        android:textStyle="bold"
-        tools:text="5" />
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/btnBook"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ivProfile"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp"
+        android:text="book now" />
 </RelativeLayout>

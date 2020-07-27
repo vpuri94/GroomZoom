@@ -1,11 +1,15 @@
 package com.example.groomzoom;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.location.Location;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -66,6 +70,7 @@ public class BrowseAdapter extends RecyclerView.Adapter<BrowseAdapter.ViewHolder
         private ImageView ivProfile;
         private RatingBar rbRating;
         private TextView tvDistance;
+        private Button btnBook;
 
         public ViewHolder(@NonNull View itemView){
             super(itemView);
@@ -74,6 +79,7 @@ public class BrowseAdapter extends RecyclerView.Adapter<BrowseAdapter.ViewHolder
             ivProfile = itemView.findViewById(R.id.ivProfile);
             rbRating = itemView.findViewById(R.id.rbRating);
             tvDistance = itemView.findViewById(R.id.tvDistance);
+            btnBook = itemView.findViewById(R.id.btnBook);
         }
 
         public void bind(Browse browse) throws ParseException {
@@ -89,12 +95,17 @@ public class BrowseAdapter extends RecyclerView.Adapter<BrowseAdapter.ViewHolder
             float rating = (float) browse.getRating();
             rbRating.setRating(rating);
             tvDistance.setText("Distance away: "+ String.format("%.2f",getDistance(browse)) + "km");
+            btnBook.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    goBook();
+                }
+            });
         }
 
         public String servicePreview(List<String> services){
             String servPreview = "";
             String ending = ".....";
-
             for(int x = 0; x < services.size() ; x++){
                 if(x > 1)
                     return servPreview + ending;
@@ -102,9 +113,6 @@ public class BrowseAdapter extends RecyclerView.Adapter<BrowseAdapter.ViewHolder
             }
             return servPreview;
         }
-
-
-
     }
 
     public float getDistance(Browse browse) throws ParseException {
@@ -124,7 +132,12 @@ public class BrowseAdapter extends RecyclerView.Adapter<BrowseAdapter.ViewHolder
         newLocation.setLongitude(newLong);
         newLocation.setLatitude(newLat);
         return myLocation.distanceTo(newLocation) / 1000;
-
     }
+
+    private void goBook(){
+        Intent gotoBookScreen = new Intent(context, Booking.class);
+        context.startActivity(gotoBookScreen);
+    }
+
 
 }
