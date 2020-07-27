@@ -174,9 +174,11 @@ public class ProfileFragment extends Fragment {
         myServices.add(cbBlowdry);
 
         List<String> myPrefs = myself.getList(servicesKey);
-        for(int x = 0; x < myServices.size(); x++){
-            if(myPrefs.contains(String.valueOf(myServices.get(x).getText()))){
-                myServices.get(x).setChecked(true);
+        if (myPrefs != null) {
+            for (int x = 0; x < myServices.size(); x++) {
+                if (myPrefs.contains(String.valueOf(myServices.get(x).getText()))) {
+                    myServices.get(x).setChecked(true);
+                }
             }
         }
     }

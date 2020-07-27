@@ -22,6 +22,8 @@ import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
+import com.parse.ParseGeoPoint;
+import com.parse.ParseUser;
 
 import java.util.Arrays;
 
@@ -71,6 +73,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         btnSaveAddress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                ParseUser currentUser = ParseUser.getCurrentUser();
+                ParseGeoPoint selectedLocation = new ParseGeoPoint(latLng.latitude, latLng.longitude);
+                currentUser.put("mapPoint", selectedLocation);
+                currentUser.saveInBackground();
                 Intent i = new Intent();
                 i.putExtra("address", addressResult);
                 setResult(23, i);

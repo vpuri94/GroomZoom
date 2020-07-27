@@ -3,6 +3,8 @@ package com.example.groomzoom;
 import com.parse.ParseClassName;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
+import com.parse.ParseUser;
+
 import java.util.List;
 
 @ParseClassName("Browse")
@@ -13,6 +15,7 @@ public static final String KEY_NAME = "name";
 public static final String KEY_BARBER = "barber";
 public static final String KEY_RATING = "rating";
 public static final String KEY_SERVICES = "services";
+public static final String KEY_ADDRESS = "address";
 
 public String getName(){
     return getString(KEY_NAME);
@@ -32,4 +35,9 @@ public ParseFile getProfilePic(){
     public List<String> getServices(){
         return getList(KEY_SERVICES);
     }
+
+    public ParseUser getAddress() {
+        return getParseUser(KEY_ADDRESS);
+    }
+
 }

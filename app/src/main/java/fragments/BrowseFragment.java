@@ -1,5 +1,6 @@
 package fragments;
 
+import android.location.Location;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -17,6 +18,7 @@ import com.example.groomzoom.BrowseAdapter;
 import com.example.groomzoom.R;
 import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseGeoPoint;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import java.util.ArrayList;
@@ -100,7 +102,24 @@ public class BrowseFragment extends Fragment {
     }
 
     private List<Browse> sortByDistance(List<Browse> newList) {
-        String myAddress = currentUser.getString("address");
+        ParseGeoPoint currentLocation = currentUser.getParseGeoPoint("mapPoint");
+        double myLat = currentLocation.getLatitude();
+        double myLong = currentLocation.getLongitude();
+        Location myLocation = new Location("myLocation");
+        myLocation.setLatitude(myLat);
+        myLocation.setLongitude(myLong);
+        List<Float> distanceList = new ArrayList<>();
+
+        for(Browse browse: newList){
+            ParseUser eachUser = browse.getAddress();
+            ParseGeoPoint newPoint = eachUser.getParseGeoPoint("mapPoint");
+            double newLat = newPoint.getLatitude();
+            double newLong = newPoint.getLongitude();
+            Location newLocation = new Location("newLocation");
+            newLocation.setLongitude(newLong);
+            newLocation.setLatitude(newLat);
+            distanceList.add(myLocation.distanceTo(newLocation));
+        }
 
 
         return newList;
@@ -122,6 +141,5 @@ public class BrowseFragment extends Fragment {
         }
         return newList;
     }
-
 
 }
