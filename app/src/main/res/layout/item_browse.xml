@@ -62,4 +62,15 @@
         android:layout_marginEnd="0dp"
         android:layout_toEndOf="@+id/rbRating"
         tools:srcCompat="@tools:sample/avatars" />
+
+    <TextView
+        android:id="@+id/tvDistance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="4dp"
+        android:layout_toEndOf="@+id/tvName"
+        android:textStyle="bold"
+        tools:text="5" />
 </RelativeLayout>

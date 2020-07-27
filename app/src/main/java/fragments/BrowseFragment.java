@@ -154,7 +154,7 @@ public class BrowseFragment extends Fragment {
         return userList;
     }
 
-    private List<Browse> sortByDistance(List<Browse> newList, boolean closestFirst) throws ParseException {
+    public List<Browse> sortByDistance(List<Browse> newList, boolean closestFirst) throws ParseException {
         ParseUser currentUser = ParseUser.getCurrentUser();
         ParseGeoPoint currentLocation = currentUser.fetchIfNeeded().getParseGeoPoint("mapPoint");
         double myLat = currentLocation.getLatitude();

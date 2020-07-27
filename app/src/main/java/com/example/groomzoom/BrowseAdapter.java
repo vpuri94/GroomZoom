@@ -20,7 +20,10 @@ import com.parse.ParseGeoPoint;
 import com.parse.ParseUser;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+
+import fragments.BrowseFragment;
 
 public class BrowseAdapter extends RecyclerView.Adapter<BrowseAdapter.ViewHolder> {
 
@@ -43,6 +46,7 @@ public class BrowseAdapter extends RecyclerView.Adapter<BrowseAdapter.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Browse browse = browseList.get(position);
+
         try {
             holder.bind(browse);
         } catch (ParseException e) {
@@ -61,6 +65,7 @@ public class BrowseAdapter extends RecyclerView.Adapter<BrowseAdapter.ViewHolder
         private TextView tvService;
         private ImageView ivProfile;
         private RatingBar rbRating;
+        private TextView tvDistance;
 
         public ViewHolder(@NonNull View itemView){
             super(itemView);
@@ -68,6 +73,7 @@ public class BrowseAdapter extends RecyclerView.Adapter<BrowseAdapter.ViewHolder
             tvService = itemView.findViewById(R.id.tvService);
             ivProfile = itemView.findViewById(R.id.ivProfile);
             rbRating = itemView.findViewById(R.id.rbRating);
+            tvDistance = itemView.findViewById(R.id.tvDistance);
         }
 
         public void bind(Browse browse) throws ParseException {
@@ -82,6 +88,7 @@ public class BrowseAdapter extends RecyclerView.Adapter<BrowseAdapter.ViewHolder
                 Glide.with(context).load(profilePic.getUrl()).into(ivProfile);
             float rating = (float) browse.getRating();
             rbRating.setRating(rating);
+            tvDistance.setText("Distance away: "+ String.format("%.2f",getDistance(browse)) + "km");
         }
 
         public String servicePreview(List<String> services){
@@ -95,45 +102,29 @@ public class BrowseAdapter extends RecyclerView.Adapter<BrowseAdapter.ViewHolder
             }
             return servPreview;
         }
-        private List<Browse> sortByDistance(List<Browse> newList) throws ParseException {
-            ParseUser currentUser = ParseUser.getCurrentUser();
-            ParseGeoPoint currentLocation = currentUser.fetchIfNeeded().getParseGeoPoint("mapPoint");
-            double myLat = currentLocation.getLatitude();
-            double myLong = currentLocation.getLongitude();
-            Location myLocation = new Location("myLocation");
-            myLocation.setLatitude(myLat);
-            myLocation.setLongitude(myLong);
-            List<Float> distanceList = new ArrayList<>();
 
-            for(Browse browse: newList){
-                ParseUser eachUser = browse.getAddress();
-                ParseGeoPoint newPoint = eachUser.fetchIfNeeded().getParseGeoPoint("mapPoint");
-                double newLat = newPoint.getLatitude();
-                double newLong = newPoint.getLongitude();
-                Location newLocation = new Location("newLocation");
-                newLocation.setLongitude(newLong);
-                newLocation.setLatitude(newLat);
-                distanceList.add(myLocation.distanceTo(newLocation) / 1000);
-            }
-
-            for(int x = 0; x < distanceList.size(); x++){
-                for(int y = 0; y < distanceList.size() - 1 - x; y++){
-                    if(distanceList.get(y) > distanceList.get(y+1)){
-                        float temp = distanceList.get(y);
-                        distanceList.set(y, distanceList.get(y+1));
-                        distanceList.set(y+1, temp);
-                        newList.set(y, newList.get(y+1));
-                        newList.set(y+1, newList.get(y));
-                    }
-                }
-            }
-            for(Float dist: distanceList){
-                Toast.makeText(context, "dist "+ dist, Toast.LENGTH_SHORT).show();
-            }
-
-            return newList;
-        }
 
 
     }
+
+    public float getDistance(Browse browse) throws ParseException {
+        ParseUser currentUser = ParseUser.getCurrentUser();
+        ParseGeoPoint currentLocation = currentUser.fetchIfNeeded().getParseGeoPoint("mapPoint");
+        double myLat = currentLocation.getLatitude();
+        double myLong = currentLocation.getLongitude();
+        Location myLocation = new Location("myLocation");
+        myLocation.setLatitude(myLat);
+        myLocation.setLongitude(myLong);
+
+        ParseUser eachUser = browse.getAddress();
+        ParseGeoPoint newPoint = eachUser.fetchIfNeeded().getParseGeoPoint("mapPoint");
+        double newLat = newPoint.getLatitude();
+        double newLong = newPoint.getLongitude();
+        Location newLocation = new Location("newLocation");
+        newLocation.setLongitude(newLong);
+        newLocation.setLatitude(newLat);
+        return myLocation.distanceTo(newLocation) / 1000;
+
+    }
+
 }
