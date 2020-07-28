@@ -18,6 +18,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
+import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseGeoPoint;
@@ -95,6 +96,9 @@ public class BrowseAdapter extends RecyclerView.Adapter<BrowseAdapter.ViewHolder
             float rating = (float) browse.getRating();
             rbRating.setRating(rating);
             tvDistance.setText("Distance away: "+ String.format("%.2f",getDistance(browse)) + "km");
+            ParseUser currentUser = ParseUser.getCurrentUser();
+            if(!currentUser.getBoolean("barber"))
+                btnBook.setVisibility(View.GONE);
             btnBook.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
