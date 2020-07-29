@@ -89,7 +89,7 @@ public class BrowseAdapter extends RecyclerView.Adapter<BrowseAdapter.ViewHolder
             rbRating.setRating(rating);
             tvDistance.setText("Distance away: "+ String.format("%.2f",getDistance(browse)) + "km");
             ParseUser currentUser = ParseUser.getCurrentUser();
-            if(!currentUser.getBoolean("barber"))
+            if(currentUser.getBoolean("barber"))
                 btnBook.setVisibility(View.GONE);
             btnBook.setOnClickListener(new View.OnClickListener() {
                 @Override

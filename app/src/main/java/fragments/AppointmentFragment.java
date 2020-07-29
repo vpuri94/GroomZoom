@@ -111,13 +111,6 @@ public static final String TAG = "AppointmentFragment";
                 if(e != null){
                     return;
                 }
-                for(Appointments appointment : appointments){
-                    try {
-                        Log.i(TAG, "Appointments: " + appointment.getServices() + ", username: " + appointment.getUser().fetchIfNeeded().getUsername());
-                    } catch (ParseException ex) {
-                        ex.printStackTrace();
-                    }
-                }
                 allAppointments.addAll(appointments);
                 adapter.notifyDataSetChanged();
             }

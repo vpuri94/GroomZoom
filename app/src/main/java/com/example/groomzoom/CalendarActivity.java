@@ -17,9 +17,9 @@ import java.util.List;
 
 public class CalendarActivity extends AppCompatActivity {
 private CalendarView mCalendarView;
-
-
-
+private String futureError = "Must pick a date in the future!";
+private String datePattern = "M/dd/yyyy";
+private String dateKey = "date";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -31,7 +31,7 @@ private CalendarView mCalendarView;
             @Override
             public void onSelectedDayChange(@NonNull CalendarView calendarView, int month, int year, int day) {
                 String date = (year + 1) + "/" + day + "/" + month;
-                SimpleDateFormat formatter = new SimpleDateFormat("M/dd/yyyy");
+                SimpleDateFormat formatter = new SimpleDateFormat(datePattern);
                 Date selectedDate = null;
                 try {
                     selectedDate = formatter.parse(date);
@@ -47,12 +47,12 @@ private CalendarView mCalendarView;
                 }
 
                 if(selectedDate.compareTo(currDate) < 0){
-                    Toast.makeText(getApplicationContext(), "Must pick a date in the future!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), futureError, Toast.LENGTH_SHORT).show();
                     return;
                 }
 
                 Intent intent = new Intent(CalendarActivity.this, Booking.class);
-                intent.putExtra("date", date);
+                intent.putExtra(dateKey, date);
                 startActivity(intent);
             }
         });

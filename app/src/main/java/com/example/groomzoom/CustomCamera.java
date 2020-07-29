@@ -75,7 +75,11 @@ public class CustomCamera extends AppCompatActivity {
     HandlerThread mBackgroundThread;
     String parseKey;
     String pictureMsg = "Take a picture with you face the ";
-
+    String directionKey = "direction";
+    String cameraPermissionMsg = "Sorry, camera permission is necessary";
+    String frontKey = "frontSelfie";
+    String leftKey = "leftSelfie";
+    String rightKey = "rightSelfie";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,7 +91,7 @@ public class CustomCamera extends AppCompatActivity {
         textureView.setSurfaceTextureListener(textureListener);
 
         Intent intent = getIntent();
-        final String direction = intent.getStringExtra("direction");
+        final String direction = intent.getStringExtra(directionKey);
         Toast.makeText(getApplicationContext(), pictureMsg + direction, Toast.LENGTH_SHORT).show();
 
         button.setOnClickListener(new View.OnClickListener() {
@@ -109,8 +113,7 @@ public class CustomCamera extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if(requestCode == 101){
             if(grantResults[0] == PackageManager.PERMISSION_DENIED){
-                Toast.makeText(getApplicationContext(), "Sorry, camera permission is necessary", Toast.LENGTH_LONG).show();
-                // finish();
+                Toast.makeText(getApplicationContext(), cameraPermissionMsg , Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -282,16 +285,16 @@ private final CameraDevice.StateCallback stateCallback = new CameraDevice.StateC
                 String username = currentUser.getUsername();
                 ParseFile newSelfie = null;
                 if(direction.equals("front")){
-                    newSelfie = new ParseFile(username + "frontSelfie.png", bytes);
-                    parseKey = "frontSelfie";
+                    newSelfie = new ParseFile(username + frontKey + ".png", bytes);
+                    parseKey = frontKey;
                 }
                 else if(direction.equals("left")){
-                    newSelfie = new ParseFile(username + "leftSelfie.png", bytes);
-                    parseKey = "leftSelfie";
+                    newSelfie = new ParseFile(username + leftKey + ".png", bytes);
+                    parseKey = leftKey;
                 }
                 else{
-                    newSelfie = new ParseFile(username + "rightSelfie.png", bytes);
-                    parseKey = "rightSelfie";
+                    newSelfie = new ParseFile(username + rightKey + ".png", bytes);
+                    parseKey = rightKey;
                 }
                 final ParseFile finalNewSelfie = newSelfie;
                 newSelfie.saveInBackground(new SaveCallback() {
@@ -396,20 +399,5 @@ private final CameraDevice.StateCallback stateCallback = new CameraDevice.StateC
         mBackgroundHandler = null;
 
 
-    }
-
-    private static byte[] readFileToByteArray(File file){
-        FileInputStream fis = null;
-        // Creating a byte array using the length of the file
-        // file.length returns long which is cast to int
-        byte[] bArray = new byte[(int) file.length()];
-        try{
-            fis = new FileInputStream(file);
-            fis.read(bArray);
-            fis.close();
-        }catch(IOException ioExp){
-            ioExp.printStackTrace();
-        }
-        return bArray;
     }
 }

@@ -35,7 +35,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     LatLng facebookDefault = new LatLng(37.4846, -122.1495);
     String addressResult = "";
     Button btnSaveAddress;
-
+    String addressEnteredTitle = "Address entered";
+    String mapPointKey = "mapPoint";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,7 +54,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onPlaceSelected(@NonNull Place place) {
                 latLng = place.getLatLng();
-                mMap.addMarker(new MarkerOptions().position(latLng).title("Address entered"));
+                mMap.addMarker(new MarkerOptions().position(latLng).title(addressEnteredTitle));
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
                 addressResult = place.getAddress();
                 btnSaveAddress.setVisibility(View.VISIBLE);
@@ -75,7 +76,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onClick(View view) {
                 ParseUser currentUser = ParseUser.getCurrentUser();
                 ParseGeoPoint selectedLocation = new ParseGeoPoint(latLng.latitude, latLng.longitude);
-                currentUser.put("mapPoint", selectedLocation);
+                currentUser.put(mapPointKey, selectedLocation);
                 currentUser.saveInBackground();
                 Intent i = new Intent();
                 i.putExtra("address", addressResult);
@@ -97,7 +98,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         else
             location = latLng;
-        mMap.addMarker(new MarkerOptions().position(location).title("Address entered"));
+        mMap.addMarker(new MarkerOptions().position(location).title(addressEnteredTitle));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(location));
     }
 }

@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.hardware.camera2.params.StreamConfigurationMap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -27,6 +28,9 @@ public class GalleryActivity extends AppCompatActivity {
     String frontKey = "front";
     String rightKey = "right";
     String leftKey = "left";
+    String pictureMsg = "File found was";
+    String pictureKey = "picture";
+    String directionKey = "direction";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,8 +64,7 @@ public class GalleryActivity extends AppCompatActivity {
 
     private void launchCameraActivity(String key) {
         Intent changePictures = new Intent(getApplicationContext(), CustomCamera.class);
-        changePictures.putExtra("direction", key);
-        Log.i("gallery activity", key);
+        changePictures.putExtra(directionKey, key);
         startActivityForResult(changePictures, 69);
     }
 
@@ -69,8 +72,8 @@ public class GalleryActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 69 && resultCode == RESULT_OK && data != null) {
-            File pictureRetrieved = (File) data.getSerializableExtra("picture");
-            Toast.makeText(getApplicationContext(), "File found was" + pictureRetrieved.getName(), Toast.LENGTH_LONG).show();
+            File pictureRetrieved = (File) data.getSerializableExtra(pictureKey);
+            Toast.makeText(getApplicationContext(), pictureMsg + pictureRetrieved.getName(), Toast.LENGTH_LONG).show();
         }
 
     }

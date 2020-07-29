@@ -49,7 +49,7 @@ public class Booking extends AppCompatActivity {
         String date = incomingIntent.getStringExtra("date");
         final String objectId = incomingIntent.getStringExtra("id");
 
-        Toast.makeText(getApplicationContext(), "usebane is "+ objectId, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), "username is "+ objectId, Toast.LENGTH_SHORT).show();
         values2.add(" @ 8AM");
         values2.add(" @ 9AM");
         values2.add(" @ 10AM");
