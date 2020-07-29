@@ -9,31 +9,27 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 public class CalendarActivity extends AppCompatActivity {
 private CalendarView mCalendarView;
 
 public class appointment{
     public String date;
     public int time;
-    public boolean available;
-    public appointment(String date, int time, boolean available){
+    public appointment(String date, int time){
         this.date = date;
         this.time = time;
-        this.available = available;
     }
 
     public String getDate(){
         return date;
     }
-}
 
-public class calendar {
-public appointment[] appointments;
-public calendar(appointment[] appointments){
-    this.appointments = appointments;
 }
-}
-
 
 
     @Override
@@ -49,8 +45,13 @@ public calendar(appointment[] appointments){
                 Intent intent = new Intent(CalendarActivity.this, Booking.class);
                 intent.putExtra("date", date);
                 startActivity(intent);
-                appointment newAppt = new appointment(date, 14, true);
-//                Toast.makeText(getApplicationContext(), "date " + newAppt.getDate(), Toast.LENGTH_SHORT).show();
+//                appointment newAppt = new appointment(date, 14);
+//                SimpleDateFormat formatter = new SimpleDateFormat("M/dd/yyyy");
+//                Date currDate = new Date();
+//                String theDate = formatter.format(currDate);
+//                Toast.makeText(getApplicationContext(), "date " + newAppt.getDate() + "  " + theDate, Toast.LENGTH_SHORT).show();
+//                List<appointment> appointmentList = new ArrayList<>();
+//                appointmentList.add(newAppt);
             }
         });
     }
