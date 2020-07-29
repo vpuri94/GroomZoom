@@ -50,7 +50,7 @@ public class BrowseFragment extends Fragment {
     private String TAG = "HI";
     private ParseUser currentUser = ParseUser.getCurrentUser();
     public String[] sortType = {"Sort By: Distance (closest to farthest)", "Sort By: Distance (farthest to closest)", "Sort By: Rating (Highest to Lowest)", "Sort By: Rating (Lowest to Highest)"};
-    public String[] filters = {" ", "Filter By: 4 Stars are more", "Filter By: Less than X Km"};
+    public String[] filters = {"No Filter", "Filter By: 4 Stars or more", "Filter By: Less than X Km"};
     public  boolean sortingByDistance = false;
     public boolean sortingByRating = false;
     public boolean closestFirst = false;
@@ -198,8 +198,6 @@ public class BrowseFragment extends Fragment {
         query.findInBackground(new FindCallback<Browse>() {
             @Override
             public void done(List<Browse> objects, ParseException e) {
-//                Toast.makeText(getContext(), "filter km" + filterByDistance, Toast.LENGTH_SHORT).show();
-//                Toast.makeText(getContext(), "filter stars" + filterByFour, Toast.LENGTH_SHORT).show();
                 if(e != null){
                     return;
                 }
@@ -208,22 +206,19 @@ public class BrowseFragment extends Fragment {
                 } catch (ParseException ex) {
                     ex.printStackTrace();
                 }
-                for(Browse browse: objects){
-//                    Toast.makeText(getContext(), "rating of " + browse.getRating(), Toast.LENGTH_SHORT).show();
+                if(filterByDistance) {
+                    for (Browse browse : objects) {
+                        try {
+                            if (getDistance(browse) <= distanceFilter) {
+                                allBrowse.add(browse);
+                            }
+                        } catch (ParseException ex) {
+                            ex.printStackTrace();
+                        }
+                    }
                 }
-//                if(filterByDistance) {
-//                    for (Browse browse : objects) {
-//                        try {
-//                            if (getDistance(browse) <= distanceFilter) {
-//                                allBrowse.add(browse);
-//                            }
-//                        } catch (ParseException ex) {
-//                            ex.printStackTrace();
-//                        }
-//                    }
-//                }
-//                else
-                allBrowse.addAll(objects);
+                else
+                    allBrowse.addAll(objects);
                 browseAdapter.notifyDataSetChanged();
             }
         });
