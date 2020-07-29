@@ -3,6 +3,7 @@ package com.example.groomzoom;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.icu.text.UnicodeSetSpanner;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -11,8 +12,12 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.parse.FindCallback;
+import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import java.text.SimpleDateFormat;
@@ -33,20 +38,6 @@ public class Booking extends AppCompatActivity {
     ArrayList<Integer> timesBooked = new ArrayList<Integer>();
 
 
-    public class appointment{
-        public String date;
-        public int time;
-        public appointment(String date, int time){
-            this.date = date;
-            this.time = time;
-        }
-
-        public String getDate(){
-            return date;
-        }
-
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +47,9 @@ public class Booking extends AppCompatActivity {
 
         Intent incomingIntent = getIntent();
         String date = incomingIntent.getStringExtra("date");
+        final String objectId = incomingIntent.getStringExtra("id");
+
+        Toast.makeText(getApplicationContext(), "usebane is "+ objectId, Toast.LENGTH_SHORT).show();
         values2.add(" @ 8AM");
         values2.add(" @ 9AM");
         values2.add(" @ 10AM");
@@ -75,7 +69,6 @@ public class Booking extends AppCompatActivity {
             }
                 values2.set(x, date + values2.get(x));
         }
-
 
 
 
@@ -106,16 +99,20 @@ public class Booking extends AppCompatActivity {
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                if(availability.get(position).equals("Booked")){
+                    Toast.makeText(getApplicationContext(), "Sorry! This time slot is full!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 if(position >= 5){
                     try {
-                        setBooking(finalDate, position - 4);
+                        setBooking(finalDate, position - 4, objectId);
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
                 }
                 else{
                     try {
-                        setBooking(finalDate, position + 8);
+                        setBooking(finalDate, position + 8, objectId);
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
@@ -177,7 +174,7 @@ public class Booking extends AppCompatActivity {
         }
     }
 
-    private void setBooking(String date, int time) throws ParseException {
+    private void setBooking(String date, int time, String username) throws ParseException {
         ParseFile appts = (ParseFile) currentUser.get("appointments");
         byte[] data = appts.getData();
         String text = new String(data);
@@ -187,6 +184,31 @@ public class Booking extends AppCompatActivity {
         file.saveInBackground();
         currentUser.put("appointments", file);
         currentUser.saveInBackground();
+
+//        ParseObject obj = ParseObject.create("Appointments");
+//        obj.put("price", 25);
+//        obj.put("occurred", false);
+//        obj.put("userRating", 5);
+//        obj.saveInBackground();
+//        ParseQuery<ParseUser> query = ParseQuery.getQuery("User");
+//
+//        query.getInBackground(username, new GetCallback<ParseUser>() {
+//            @Override
+//            public void done(ParseUser object, ParseException e) {
+//                if (e == null) {
+//                    Toast.makeText(getApplicationContext(), "SAVED", Toast.LENGTH_SHORT).show();
+//                    ParseObject newAppt = ParseObject.create("Appointments");
+//                    newAppt.put("occurred", false);
+//                     hard coded need to change
+//                    newAppt.put("price", 25);
+//                    newAppt.put("userRating", object.getNumber("rating"));
+//                    newAppt.put("profilePic", object.getParseFile("frontSelfie"));
+//                    newAppt.saveInBackground();
+//                }
+//            }
+//        });
+
+
     }
 
 

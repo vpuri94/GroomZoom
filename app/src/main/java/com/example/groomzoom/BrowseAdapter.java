@@ -1,11 +1,8 @@
 package com.example.groomzoom;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
-import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,22 +10,17 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
-import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseUser;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-import fragments.BrowseFragment;
 
 public class BrowseAdapter extends RecyclerView.Adapter<BrowseAdapter.ViewHolder> {
 
@@ -83,7 +75,7 @@ public class BrowseAdapter extends RecyclerView.Adapter<BrowseAdapter.ViewHolder
             btnBook = itemView.findViewById(R.id.btnBook);
         }
 
-        public void bind(Browse browse) throws ParseException {
+        public void bind(final Browse browse) throws ParseException {
             tvName.setText(browse.getName());
             String preview = servicePreview(browse.getServices());
             if(browse.getBarber())
@@ -102,7 +94,7 @@ public class BrowseAdapter extends RecyclerView.Adapter<BrowseAdapter.ViewHolder
             btnBook.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    goBook();
+                    goBook(browse);
                 }
             });
         }
@@ -138,8 +130,9 @@ public class BrowseAdapter extends RecyclerView.Adapter<BrowseAdapter.ViewHolder
         return myLocation.distanceTo(newLocation) / 1000;
     }
 
-    private void goBook(){
+    private void goBook(Browse browse){
         Intent gotoBookScreen = new Intent(context, Booking.class);
+        gotoBookScreen.putExtra("id", browse.getObjectId());
         context.startActivity(gotoBookScreen);
     }
 

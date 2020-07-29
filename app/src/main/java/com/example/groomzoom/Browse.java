@@ -23,6 +23,7 @@ public String getName(){
 public void setName(String name){
     put(KEY_NAME, name);
 }
+public String getUsername(){ return getString(KEY_USERNAME); }
 public boolean getBarber(){
     return getBoolean(KEY_BARBER);
 }
