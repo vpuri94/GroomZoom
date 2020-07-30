@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.parse.GetDataCallback;
@@ -25,12 +26,18 @@ public class GalleryActivity extends AppCompatActivity {
     ImageButton btnLeftPic;
     ImageButton btnFrontPic;
     ImageButton btnRightPic;
+    TextView tvFront;
+    TextView tvLeft;
+    TextView tvRight;
+
     String frontKey = "front";
     String rightKey = "right";
     String leftKey = "left";
     String pictureMsg = "File found was";
     String pictureKey = "picture";
     String directionKey = "direction";
+    String barberKey = "barber";
+    ParseUser currentUser = ParseUser.getCurrentUser();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +46,10 @@ public class GalleryActivity extends AppCompatActivity {
         btnFrontPic = (ImageButton) findViewById(R.id.btnFrontPic);
         btnLeftPic = (ImageButton) findViewById(R.id.btnLeftPic);
         btnRightPic = (ImageButton) findViewById(R.id.btnRightPic);
+        tvLeft = (TextView) findViewById(R.id.tvLeft);
+        tvFront = (TextView) findViewById(R.id.tvFront);
+        tvRight = (TextView) findViewById(R.id.tvRight);
+
         btnFrontPic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -46,20 +57,27 @@ public class GalleryActivity extends AppCompatActivity {
             }
         });
 
-        btnLeftPic.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                launchCameraActivity(leftKey);
-            }
-        });
+        if(currentUser.getBoolean(barberKey)){
+            btnLeftPic.setVisibility(View.GONE);
+            btnRightPic.setVisibility(View.GONE);
+            tvLeft.setVisibility(View.GONE);
+            tvRight.setVisibility(View.GONE);
+        }
+        else {
+            btnLeftPic.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    launchCameraActivity(leftKey);
+                }
+            });
 
-        btnRightPic.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                launchCameraActivity(rightKey);
-            }
-        });
-
+            btnRightPic.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    launchCameraActivity(rightKey);
+                }
+            });
+        }
     }
 
     private void launchCameraActivity(String key) {

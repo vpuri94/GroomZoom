@@ -74,10 +74,10 @@ public class CustomCamera extends AppCompatActivity {
     Handler mBackgroundHandler;
     HandlerThread mBackgroundThread;
     String parseKey;
-    String pictureMsg = "Take a picture with you face the ";
+    String pictureMsg = "Take a picture with you facing the ";
     String directionKey = "direction";
     String cameraPermissionMsg = "Sorry, camera permission is necessary";
-    String frontKey = "frontSelfie";
+    String frontKey = "profilePic";
     String frontMsg = "front";
     String leftMsg = "left";
     String leftKey = "leftSelfie";

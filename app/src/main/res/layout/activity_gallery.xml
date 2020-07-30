@@ -38,7 +38,7 @@
         android:src="@drawable/rightpic" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/tvFront"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/btnFrontPic"
@@ -46,34 +46,34 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="31dp"
-        android:layout_marginEnd="161dp"
-        android:layout_marginBottom="154dp"
+        android:layout_marginEnd="143dp"
+        android:layout_marginBottom="156dp"
         android:text="Front Profile"
         android:textSize="18sp" />
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/tvRight"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/btnRightPic"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_marginTop="34dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginBottom="151dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="152dp"
         android:text="Right Profile"
         android:textSize="18sp" />
 
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/tvLeft"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/btnLeftPic"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginTop="28dp"
-        android:layout_marginEnd="298dp"
-        android:layout_marginBottom="155dp"
+        android:layout_marginTop="27dp"
+        android:layout_marginEnd="291dp"
+        android:layout_marginBottom="157dp"
         android:text="Left Profile"
         android:textSize="18sp" />
 </RelativeLayout>
