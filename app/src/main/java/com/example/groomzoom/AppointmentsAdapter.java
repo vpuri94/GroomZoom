@@ -1,5 +1,6 @@
 package com.example.groomzoom;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -111,6 +112,7 @@ public class AppointmentsAdapter extends RecyclerView.Adapter<AppointmentsAdapte
                 intent.putExtra(Appointments.class.getSimpleName(), Parcels.wrap(appointment));
                 // show the activity
                 context.startActivity(intent);
+
             }
         }
 

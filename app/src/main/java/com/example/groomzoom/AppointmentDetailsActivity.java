@@ -1,6 +1,8 @@
 package com.example.groomzoom;
 
 import android.os.Bundle;
+import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -27,6 +29,22 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
     TextView tvPrice;
     TextView tvServicesList;
     String barberKey = "barber";
+    private ScaleGestureDetector mScaleGestureDetector;
+    private float mScaleFactor = 1.0f;
+
+
+    private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
+        @Override
+        public boolean onScale(ScaleGestureDetector scaleGestureDetector){
+            mScaleFactor *= scaleGestureDetector.getScaleFactor();
+            mScaleFactor = Math.max(0.1f,
+                    Math.min(mScaleFactor, 10.0f));
+            ivProfilepic.setScaleX(mScaleFactor);
+            ivProfilepic.setScaleY(mScaleFactor);
+            return true;
+        }
+    }
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -66,9 +84,20 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
         if (image != null) {
             Glide.with(getApplicationContext()).load(image.getUrl()).into(ivProfilepic);
         }
+
+        mScaleGestureDetector = new ScaleGestureDetector(this, new ScaleListener());
+
         float rating = (float) appointment.getRating();
         rbAppt.setRating(rating = rating > 0 ? rating / 2.0f : rating);
         tvServicesList.setText(bulletedVersion(appointment.getServices()));
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        mScaleGestureDetector.onTouchEvent(event);
+        return true;
+
+
     }
 
     public String bulletedVersion(List<String> listOfServices){

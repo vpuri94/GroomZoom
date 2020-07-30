@@ -84,6 +84,7 @@ public class GalleryActivity extends AppCompatActivity {
         Intent changePictures = new Intent(getApplicationContext(), CustomCamera.class);
         changePictures.putExtra(directionKey, key);
         startActivityForResult(changePictures, 69);
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
     @Override
