@@ -14,6 +14,9 @@ import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
+
+import es.dmoral.toasty.Toasty;
+
 import static android.R.*;
 
 
@@ -58,7 +61,7 @@ public class LoginActivity extends AppCompatActivity implements AdapterView.OnIt
             @Override
             public void onClick(View view) {
                 if(optionSelected == ""){
-                    Toast.makeText(LoginActivity.this, signupError, Toast.LENGTH_SHORT).show();
+                    Toasty.error(LoginActivity.this, signupError, Toasty.LENGTH_SHORT, true).show();
                     return;
                 }
                 signUp(etUsername.getText().toString(), etPassword.getText().toString());
@@ -88,7 +91,7 @@ public class LoginActivity extends AppCompatActivity implements AdapterView.OnIt
                 else{
                     // Sign up worked
                     goMainActivity();
-                    Toast.makeText(LoginActivity.this, signupSuccess, Toast.LENGTH_SHORT).show();
+                    Toasty.success(LoginActivity.this, signupSuccess, Toasty.LENGTH_SHORT, true).show();
                 }
             }
         });
@@ -105,7 +108,7 @@ public class LoginActivity extends AppCompatActivity implements AdapterView.OnIt
                 else {
                     // Main activity if user has signed in properly
                     goMainActivity();
-                    Toast.makeText(LoginActivity.this, loginSuccess, Toast.LENGTH_SHORT).show();
+                    Toasty.success(LoginActivity.this, loginSuccess, Toasty.LENGTH_SHORT, true).show();
                 }
             }
         });

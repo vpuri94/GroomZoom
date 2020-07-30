@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import es.dmoral.toasty.Toasty;
+
 public class Booking extends AppCompatActivity {
     ParseUser currentUser = ParseUser.getCurrentUser();
     public static final String TAG = "booking";
@@ -101,7 +103,7 @@ public class Booking extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 if(availability.get(position).equals(booked)){
-                    Toast.makeText(getApplicationContext(), fullMsg, Toast.LENGTH_SHORT).show();
+                    Toasty.error(getApplicationContext(), fullMsg, Toasty.LENGTH_SHORT, true).show();
                     return;
                 }
                 if(position >= 5){
@@ -118,7 +120,7 @@ public class Booking extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 }
-                Toast.makeText(getApplicationContext(), bookedMsg, Toast.LENGTH_SHORT).show();
+                Toasty.success(getApplicationContext(), bookedMsg, Toasty.LENGTH_SHORT, true).show();
                 try {
                     checkBooking(finalDate);
                 } catch (ParseException e) {

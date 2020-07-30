@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import es.dmoral.toasty.Toasty;
+
 public class CalendarActivity extends AppCompatActivity {
 private CalendarView mCalendarView;
 private String futureError = "Must pick a date in the future!";
@@ -47,7 +49,7 @@ private String dateKey = "date";
                 }
 
                 if(selectedDate.compareTo(currDate) < 0){
-                    Toast.makeText(getApplicationContext(), futureError, Toast.LENGTH_SHORT).show();
+                    Toasty.error(getApplicationContext(), futureError, Toasty.LENGTH_SHORT, true).show();
                     return;
                 }
 

@@ -49,6 +49,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import es.dmoral.toasty.Toasty;
+
 public class CustomCamera extends AppCompatActivity {
 
     Button button;
@@ -101,8 +103,7 @@ public class CustomCamera extends AppCompatActivity {
 
         Intent intent = getIntent();
         final String direction = intent.getStringExtra(directionKey);
-        Toast.makeText(getApplicationContext(), pictureMsg + direction, Toast.LENGTH_SHORT).show();
-
+        Toasty.info(getApplicationContext(), pictureMsg + direction, Toasty.LENGTH_SHORT, true).show();
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -122,7 +123,7 @@ public class CustomCamera extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if(requestCode == 101){
             if(grantResults[0] == PackageManager.PERMISSION_DENIED){
-                Toast.makeText(getApplicationContext(), cameraPermissionMsg , Toast.LENGTH_LONG).show();
+                Toasty.warning(getApplicationContext(), cameraPermissionMsg, Toasty.LENGTH_LONG, true).show();
             }
         }
     }
@@ -199,7 +200,7 @@ private final CameraDevice.StateCallback stateCallback = new CameraDevice.StateC
 
             @Override
             public void onConfigureFailed(CameraCaptureSession session) {
-                Toast.makeText(getApplicationContext(), configurationFailedMsg, Toast.LENGTH_SHORT).show();
+                Toasty.error(getApplicationContext(), configurationFailedMsg, Toasty.LENGTH_SHORT, true).show();
             }
         }, null);
     }
@@ -317,9 +318,9 @@ private final CameraDevice.StateCallback stateCallback = new CameraDevice.StateC
                                     return;
                                 }
                             });
-                            Toast.makeText(getApplicationContext(), updatedMsg, Toast.LENGTH_SHORT).show();
+                            Toasty.success(getApplicationContext(), updatedMsg, Toasty.LENGTH_SHORT,true).show();
                         }else{
-                            Toast.makeText(getApplicationContext(), errorMsg, Toast.LENGTH_SHORT).show();
+                            Toasty.error(getApplicationContext(), errorMsg, Toasty.LENGTH_SHORT, true).show();
                         }
                     }
                 });

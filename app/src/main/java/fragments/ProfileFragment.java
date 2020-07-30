@@ -27,6 +27,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import es.dmoral.toasty.Toasty;
+
 @ParseClassName("User")
 public class ProfileFragment extends Fragment {
     private static final int RESULT_OK = 23;
@@ -132,7 +134,7 @@ public class ProfileFragment extends Fragment {
         if(cbBlowdry.isChecked())
             serviceList.add(String.valueOf(cbBlowdry.getText()));
         myself.put(servicesKey, serviceList);
-        Toast.makeText(getContext(), saveChangesMsg, Toast.LENGTH_LONG).show();
+        Toasty.success(getContext(), saveChangesMsg, Toasty.LENGTH_LONG, true).show();
         myself.saveInBackground();
     }
 

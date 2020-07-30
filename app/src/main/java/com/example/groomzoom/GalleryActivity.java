@@ -21,6 +21,8 @@ import com.parse.ParseUser;
 
 import java.io.File;
 
+import es.dmoral.toasty.Toasty;
+
 public class GalleryActivity extends AppCompatActivity {
 
     ImageButton btnLeftPic;
@@ -92,7 +94,7 @@ public class GalleryActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 69 && resultCode == RESULT_OK && data != null) {
             File pictureRetrieved = (File) data.getSerializableExtra(pictureKey);
-            Toast.makeText(getApplicationContext(), pictureMsg + pictureRetrieved.getName(), Toast.LENGTH_LONG).show();
+            Toasty.info(getApplicationContext(), pictureMsg + pictureRetrieved.getName(), Toasty.LENGTH_SHORT, true).show();
         }
 
     }

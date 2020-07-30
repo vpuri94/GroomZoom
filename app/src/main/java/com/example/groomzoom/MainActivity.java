@@ -10,6 +10,7 @@ import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import es.dmoral.toasty.Toasty;
 import fragments.AppointmentFragment;
 import fragments.BrowseFragment;
 import fragments.ProfileFragment;
