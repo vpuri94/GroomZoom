@@ -32,9 +32,6 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.action_browse:
                         fragment = new BrowseFragment();
                         break;
-                    case R.id.action_appt:
-                        fragment = new AppointmentFragment();
-                        break;
                     case R.id.action_profile:
                         fragment = new ProfileFragment();
                         break;

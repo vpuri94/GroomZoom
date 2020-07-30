@@ -37,6 +37,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     Button btnSaveAddress;
     String addressEnteredTitle = "Address entered";
     String mapPointKey = "mapPoint";
+    String addressKey = "address";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,7 +81,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 currentUser.put(mapPointKey, selectedLocation);
                 currentUser.saveInBackground();
                 Intent i = new Intent();
-                i.putExtra("address", addressResult);
+                i.putExtra(addressKey, addressResult);
                 setResult(23, i);
                 finish();
             }

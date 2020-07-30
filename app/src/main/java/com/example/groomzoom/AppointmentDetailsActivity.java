@@ -26,6 +26,7 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
     TextView tvDate;
     TextView tvPrice;
     TextView tvServicesList;
+    String barberKey = "barber";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -40,7 +41,7 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
         // unwrap the appointment passed in via intent, using its simple name as a key
         appointment = (Appointments) Parcels.unwrap(getIntent().getParcelableExtra(Appointments.class.getSimpleName()));
         // set appointment name and price and date
-        isBarber = ParseUser.getCurrentUser().getBoolean("barber");
+        isBarber = ParseUser.getCurrentUser().getBoolean(barberKey);
         if(isBarber) {
             try {
                 tvApptname.setText(appointmentMsg + appointment.getBooker().fetchIfNeeded().getUsername());

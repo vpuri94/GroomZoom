@@ -26,8 +26,15 @@ public class BrowseAdapter extends RecyclerView.Adapter<BrowseAdapter.ViewHolder
 
     private Context context;
     private List<Browse> browseList;
+    public String newLocationKey = "newLocation";
+    public String myLocationKey = "myLocation";
     String offerMsg = "Services offered: ";
     String requestMsg = "Services requested: ";
+    String mapPointKey = "mapPoint";
+    String distanceMsg = "Distance away: ";
+    String ellipsis = "...";
+    String barberKey = "barber";
+
     public BrowseAdapter(Context context, List<Browse> browseList) {
         this.context = context;
         this.browseList = browseList;
@@ -87,9 +94,9 @@ public class BrowseAdapter extends RecyclerView.Adapter<BrowseAdapter.ViewHolder
                 Glide.with(context).load(profilePic.getUrl()).into(ivProfile);
             float rating = (float) browse.getRating();
             rbRating.setRating(rating);
-            tvDistance.setText("Distance away: "+ String.format("%.2f",getDistance(browse)) + "km");
+            tvDistance.setText(distanceMsg + String.format("%.2f",getDistance(browse)) + "km");
             ParseUser currentUser = ParseUser.getCurrentUser();
-            if(currentUser.getBoolean("barber"))
+            if(currentUser.getBoolean(barberKey))
                 btnBook.setVisibility(View.GONE);
             btnBook.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -101,10 +108,9 @@ public class BrowseAdapter extends RecyclerView.Adapter<BrowseAdapter.ViewHolder
 
         public String servicePreview(List<String> services){
             String servPreview = "";
-            String ending = ".....";
             for(int x = 0; x < services.size() ; x++){
                 if(x > 1)
-                    return servPreview + ending;
+                    return servPreview + ellipsis;
                 servPreview += services.get(x) + ", ";
             }
             return servPreview;
@@ -113,18 +119,18 @@ public class BrowseAdapter extends RecyclerView.Adapter<BrowseAdapter.ViewHolder
 
     public float getDistance(Browse browse) throws ParseException {
         ParseUser currentUser = ParseUser.getCurrentUser();
-        ParseGeoPoint currentLocation = currentUser.fetchIfNeeded().getParseGeoPoint("mapPoint");
+        ParseGeoPoint currentLocation = currentUser.fetchIfNeeded().getParseGeoPoint(mapPointKey);
         double myLat = currentLocation.getLatitude();
         double myLong = currentLocation.getLongitude();
-        Location myLocation = new Location("myLocation");
+        Location myLocation = new Location(myLocationKey);
         myLocation.setLatitude(myLat);
         myLocation.setLongitude(myLong);
 
         ParseUser eachUser = browse.getAddress();
-        ParseGeoPoint newPoint = eachUser.fetchIfNeeded().getParseGeoPoint("mapPoint");
+        ParseGeoPoint newPoint = eachUser.fetchIfNeeded().getParseGeoPoint(mapPointKey);
         double newLat = newPoint.getLatitude();
         double newLong = newPoint.getLongitude();
-        Location newLocation = new Location("newLocation");
+        Location newLocation = new Location(newLocationKey);
         newLocation.setLongitude(newLong);
         newLocation.setLatitude(newLat);
         return myLocation.distanceTo(newLocation) / 1000;

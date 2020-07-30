@@ -25,6 +25,7 @@ public class AppointmentsAdapter extends RecyclerView.Adapter<AppointmentsAdapte
     String requestMsg = "Service requested:  ";
     String wantMsg = "Services you wanted: ";
     String barberKey = "barber";
+    String ellipsis = "...";
 
     public AppointmentsAdapter(Context context, List<Appointments> appointments) {
         this.context = context;
@@ -120,7 +121,7 @@ public class AppointmentsAdapter extends RecyclerView.Adapter<AppointmentsAdapte
                     break;
                 servPreview += services.get(x) + ", ";
             }
-            return servPreview + "...";
+            return servPreview + ellipsis;
         }
     }
 }

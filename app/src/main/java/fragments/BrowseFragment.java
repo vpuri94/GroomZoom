@@ -62,6 +62,12 @@ public class BrowseFragment extends Fragment {
     public boolean filterByFour = false;
     public boolean filterByDistance = false;
     public int distanceFilter = 20;
+    public String alertTitle = "Enter how many km to filter by";
+    public String alertMsg = "Put in the number of kilometers here";
+    public String filterButton = "Filter";
+    public String cancelButton = "Cancel";
+    public String newLocationKey = "newLocation";
+    public String myLocationKey = "myLocation";
 
     public BrowseFragment() {
         // Required empty public constructor
@@ -153,14 +159,13 @@ public class BrowseFragment extends Fragment {
 
         final EditText taskEditText = new EditText(c);
         taskEditText.setInputType(InputType.TYPE_CLASS_NUMBER);
-        AlertDialog dialog = new AlertDialog.Builder(c).setTitle("Enter how many km to filter by").setMessage("Put in the number of kilometers here").setView(taskEditText).setPositiveButton("Add", new DialogInterface.OnClickListener() {
+        AlertDialog dialog = new AlertDialog.Builder(c).setTitle(alertTitle).setMessage(alertMsg).setView(taskEditText).setPositiveButton(filterButton, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 distanceFilter = Integer.valueOf(String.valueOf(taskEditText.getText()));
-                Toast.makeText(getContext(), "Distance chosen is " + distanceFilter, Toast.LENGTH_SHORT).show();
                 queryBrowse();
             }
-        }).setNegativeButton("Cancel", null).create();
+        }).setNegativeButton(cancelButton, null).create();
         dialog.show();
     }
 
@@ -192,7 +197,6 @@ public class BrowseFragment extends Fragment {
         else
             query.whereEqualTo(Browse.KEY_BARBER, true);
         if(filterByFour) {
-            Toast.makeText(getContext(), "rating of", Toast.LENGTH_SHORT).show();
             query.whereGreaterThanOrEqualTo(Browse.KEY_RATING, 4);
         }
         query.findInBackground(new FindCallback<Browse>() {
@@ -240,7 +244,7 @@ public class BrowseFragment extends Fragment {
         ParseGeoPoint currentLocation = currentUser.fetchIfNeeded().getParseGeoPoint(mapPointKey);
         double myLat = currentLocation.getLatitude();
         double myLong = currentLocation.getLongitude();
-        Location myLocation = new Location("myLocation");
+        Location myLocation = new Location(myLocationKey);
         myLocation.setLatitude(myLat);
         myLocation.setLongitude(myLong);
         List<Float> distanceList = new ArrayList<>();
@@ -250,7 +254,7 @@ public class BrowseFragment extends Fragment {
             ParseGeoPoint newPoint = eachUser.fetchIfNeeded().getParseGeoPoint(mapPointKey);
             double newLat = newPoint.getLatitude();
             double newLong = newPoint.getLongitude();
-            Location newLocation = new Location("newLocation");
+            Location newLocation = new Location(newLocationKey);
             newLocation.setLongitude(newLong);
             newLocation.setLatitude(newLat);
             distanceList.add(myLocation.distanceTo(newLocation) / 1000);
@@ -295,18 +299,18 @@ public class BrowseFragment extends Fragment {
 
     public float getDistance(Browse browse) throws ParseException {
         ParseUser currentUser = ParseUser.getCurrentUser();
-        ParseGeoPoint currentLocation = currentUser.fetchIfNeeded().getParseGeoPoint("mapPoint");
+        ParseGeoPoint currentLocation = currentUser.fetchIfNeeded().getParseGeoPoint(mapPointKey);
         double myLat = currentLocation.getLatitude();
         double myLong = currentLocation.getLongitude();
-        Location myLocation = new Location("myLocation");
+        Location myLocation = new Location(myLocationKey);
         myLocation.setLatitude(myLat);
         myLocation.setLongitude(myLong);
 
         ParseUser eachUser = browse.getAddress();
-        ParseGeoPoint newPoint = eachUser.fetchIfNeeded().getParseGeoPoint("mapPoint");
+        ParseGeoPoint newPoint = eachUser.fetchIfNeeded().getParseGeoPoint(mapPointKey);
         double newLat = newPoint.getLatitude();
         double newLong = newPoint.getLongitude();
-        Location newLocation = new Location("newLocation");
+        Location newLocation = new Location(newLocationKey);
         newLocation.setLongitude(newLong);
         newLocation.setLatitude(newLat);
         return myLocation.distanceTo(newLocation) / 1000;

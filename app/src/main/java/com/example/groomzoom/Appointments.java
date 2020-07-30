@@ -20,6 +20,8 @@ public class Appointments extends ParseObject {
     public static final String KEY_BOOKER = "booker";
     public static final String KEY_RATING = "userRating";
     public static final String KEY_BARBERPROFILEPIC = "barberProfilePic";
+    public static final String datePattern = "MM-dd-yyyy";
+    public static final String timePattern = "HH:mm";
 
     public ParseFile getProfilePic() {
         return getParseFile(KEY_PROFILEPIC);
@@ -29,8 +31,8 @@ public class Appointments extends ParseObject {
         return getParseUser(KEY_USER);
     }
     public String[] getDate() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy", Locale.ENGLISH);
-        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.ENGLISH);
+        SimpleDateFormat dateFormat = new SimpleDateFormat(datePattern, Locale.ENGLISH);
+        SimpleDateFormat timeFormat = new SimpleDateFormat(timePattern, Locale.ENGLISH);
         Date date =  getDate(KEY_DATE);
         String dateTime = dateFormat.format(date);
         String time = timeFormat.format(date);

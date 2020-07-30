@@ -36,7 +36,16 @@ public class Booking extends AppCompatActivity {
     ArrayList<String> values2 = new ArrayList<String>();
     ArrayList<String> availability = new ArrayList<String>();
     ArrayList<Integer> timesBooked = new ArrayList<Integer>();
-
+    int numTimeSlots = 10;
+    String available = "Available";
+    String booked = "Booked";
+    String dateKey = "date";
+    String idKey = "id";
+    String dateFormat = "M/dd/yyyy";
+    String fullMsg = "Sorry! This time slot is full!";
+    String bookedMsg = "Booked the appointment!";
+    String apptFilename = "appt.txt";
+    String apptKey = "appointments";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,10 +55,9 @@ public class Booking extends AppCompatActivity {
         listview = (ListView) findViewById(R.id.apptList);
 
         Intent incomingIntent = getIntent();
-        String date = incomingIntent.getStringExtra("date");
-        final String objectId = incomingIntent.getStringExtra("id");
+        String date = incomingIntent.getStringExtra(dateKey);
+        final String objectId = incomingIntent.getStringExtra(idKey);
 
-        Toast.makeText(getApplicationContext(), "username is "+ objectId, Toast.LENGTH_SHORT).show();
         values2.add(" @ 8AM");
         values2.add(" @ 9AM");
         values2.add(" @ 10AM");
@@ -62,7 +70,7 @@ public class Booking extends AppCompatActivity {
         values2.add(" @ 5PM");
         for(int x = 0; x < values2.size(); x++){
             if(date == null){
-                SimpleDateFormat formatter = new SimpleDateFormat("M/dd/yyyy");
+                SimpleDateFormat formatter = new SimpleDateFormat(dateFormat);
                 Date currDate = new Date();
                 String theDate = formatter.format(currDate);
                 date = theDate;
@@ -71,17 +79,10 @@ public class Booking extends AppCompatActivity {
         }
 
 
+        for(int x = 0; x < numTimeSlots; x++)
+            availability.add(available);
 
-        availability.add("Available");
-        availability.add("Available");
-        availability.add("Available");
-        availability.add("Available");
-        availability.add("Available");
-        availability.add("Available");
-        availability.add("Available");
-        availability.add("Available");
-        availability.add("Available");
-        availability.add("Available");
+
 
         try {
             checkBooking(date);
@@ -99,8 +100,8 @@ public class Booking extends AppCompatActivity {
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                if(availability.get(position).equals("Booked")){
-                    Toast.makeText(getApplicationContext(), "Sorry! This time slot is full!", Toast.LENGTH_SHORT).show();
+                if(availability.get(position).equals(booked)){
+                    Toast.makeText(getApplicationContext(), fullMsg, Toast.LENGTH_SHORT).show();
                     return;
                 }
                 if(position >= 5){
@@ -117,13 +118,13 @@ public class Booking extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 }
-                Toast.makeText(getApplicationContext(), "Booked the appointment!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), bookedMsg, Toast.LENGTH_SHORT).show();
                 try {
                     checkBooking(finalDate);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-                availability.set(position, "Booked");
+                availability.set(position, booked);
                 adapter.notifyDataSetChanged();
             }
         });
@@ -142,7 +143,7 @@ public class Booking extends AppCompatActivity {
     }
 
     private void checkBooking(final String date) throws ParseException {
-        ParseFile appts = (ParseFile) currentUser.get("appointments");
+        ParseFile appts = (ParseFile) currentUser.get(apptKey);
         byte[] data = appts.getData();
         String text = new String(data);
         int index = text.indexOf(date);
@@ -161,28 +162,29 @@ public class Booking extends AppCompatActivity {
             }
             for(int y = currIndex; y < nextIndex; y++) {
                 if (text.charAt(y) == ' ') {
+                    int parseInt = Integer.parseInt(String.valueOf(text.charAt(y + 1)));
                     if (y + 2 < text.length()) {
                         if (text.charAt(y + 2) == '\n')
-                            timesBooked.add(Integer.parseInt(String.valueOf(text.charAt(y + 1))));
+                            timesBooked.add(parseInt);
                         else
                             timesBooked.add(Integer.parseInt(text.charAt(y + 1) + "" + text.charAt(y + 2)));
                         break;
                     }
-                    timesBooked.add(Integer.parseInt(String.valueOf(text.charAt(y + 1))));
+                    timesBooked.add(parseInt);
                 }
             }
         }
     }
 
     private void setBooking(String date, int time, String username) throws ParseException {
-        ParseFile appts = (ParseFile) currentUser.get("appointments");
+        ParseFile appts = (ParseFile) currentUser.get(apptKey);
         byte[] data = appts.getData();
         String text = new String(data);
         text = text.concat("\n" + date + " " + time);
         byte[] newData = text.getBytes();
-        ParseFile file = new ParseFile("appt.txt", newData);
+        ParseFile file = new ParseFile(apptFilename, newData);
         file.saveInBackground();
-        currentUser.put("appointments", file);
+        currentUser.put(apptKey, file);
         currentUser.saveInBackground();
 
 //        ParseObject obj = ParseObject.create("Appointments");
@@ -225,7 +227,6 @@ public class Booking extends AppCompatActivity {
         }
 
         if (flag == false) {
-            System.out.println("NONE");
             return indices;
         }
         return indices;
@@ -235,12 +236,10 @@ public class Booking extends AppCompatActivity {
     private void changeAvailability(ArrayList<Integer> timesBooked){
         for(int x = 0; x < timesBooked.size(); x++){
             if(timesBooked.get(x) >= 8){
-                Log.i("message", "before 8 " + timesBooked.get(x));
-                availability.set(timesBooked.get(x) - 8, "Booked");
+                availability.set(timesBooked.get(x) - 8, booked);
             }
             else{
-                Log.i("message", "after 8 " + timesBooked.get(x));
-                availability.set(timesBooked.get(x) + 4, "Booked");
+                availability.set(timesBooked.get(x) + 4, booked);
             }
         }
     }

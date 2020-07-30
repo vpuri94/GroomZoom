@@ -78,8 +78,17 @@ public class CustomCamera extends AppCompatActivity {
     String directionKey = "direction";
     String cameraPermissionMsg = "Sorry, camera permission is necessary";
     String frontKey = "frontSelfie";
+    String frontMsg = "front";
+    String leftMsg = "left";
     String leftKey = "leftSelfie";
     String rightKey = "rightSelfie";
+    String configurationFailedMsg = "Configuration Changed";
+    String updatedMsg = "Picture Updated!";
+    String errorMsg = "error uploading";
+    String backgroundThread = "Camera Background";
+    String jpgExtension = ".jpg";
+    String pngExtension = ".png";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -190,7 +199,7 @@ private final CameraDevice.StateCallback stateCallback = new CameraDevice.StateC
 
             @Override
             public void onConfigureFailed(CameraCaptureSession session) {
-                Toast.makeText(getApplicationContext(), "Configuration Changed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), configurationFailedMsg, Toast.LENGTH_SHORT).show();
             }
         }, null);
     }
@@ -262,7 +271,7 @@ private final CameraDevice.StateCallback stateCallback = new CameraDevice.StateC
         Long tsLong = System.currentTimeMillis() / 1000;
         String ts = tsLong.toString();
 
-        file = new File(Environment.getDataDirectory() + "/" + ts + ".jpg");
+        file = new File(Environment.getDataDirectory() + "/" + ts + jpgExtension);
 
         ImageReader.OnImageAvailableListener readerListener = new ImageReader.OnImageAvailableListener() {
             @Override
@@ -284,16 +293,16 @@ private final CameraDevice.StateCallback stateCallback = new CameraDevice.StateC
                 final ParseUser currentUser = ParseUser.getCurrentUser();
                 String username = currentUser.getUsername();
                 ParseFile newSelfie = null;
-                if(direction.equals("front")){
-                    newSelfie = new ParseFile(username + frontKey + ".png", bytes);
+                if(direction.equals(frontMsg)){
+                    newSelfie = new ParseFile(username + frontKey + pngExtension, bytes);
                     parseKey = frontKey;
                 }
-                else if(direction.equals("left")){
-                    newSelfie = new ParseFile(username + leftKey + ".png", bytes);
+                else if(direction.equals(leftMsg)){
+                    newSelfie = new ParseFile(username + leftKey + pngExtension, bytes);
                     parseKey = leftKey;
                 }
                 else{
-                    newSelfie = new ParseFile(username + rightKey + ".png", bytes);
+                    newSelfie = new ParseFile(username + rightKey + pngExtension, bytes);
                     parseKey = rightKey;
                 }
                 final ParseFile finalNewSelfie = newSelfie;
@@ -305,14 +314,12 @@ private final CameraDevice.StateCallback stateCallback = new CameraDevice.StateC
                             currentUser.saveInBackground(new SaveCallback() {
                                 @Override
                                 public void done(ParseException e) {
-                                    if(e == null){
-                                        Toast.makeText(getApplicationContext(), "Updated!", Toast.LENGTH_SHORT).show();
-                                    }
+                                    return;
                                 }
                             });
-                            Toast.makeText(getApplicationContext(), "Picture Updated !", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), updatedMsg, Toast.LENGTH_SHORT).show();
                         }else{
-                            Toast.makeText(getApplicationContext(), "error uploading", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), errorMsg, Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -375,7 +382,7 @@ private final CameraDevice.StateCallback stateCallback = new CameraDevice.StateC
     }
 
     private void startBackgroundThread() {
-        mBackgroundThread = new HandlerThread("Camera Background");
+        mBackgroundThread = new HandlerThread(backgroundThread);
         mBackgroundThread.start();
         mBackgroundHandler = new Handler(mBackgroundThread.getLooper());
 
