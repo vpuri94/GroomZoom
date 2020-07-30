@@ -20,14 +20,14 @@ Uber for haircut/beard grooming, so that you can have a barber come to your hous
 - **Mobile:** Mobile is essential for the ability of someone to be able to quickly share their location, as well as facial profile to communicate with and find the right barber to come to them that is somewhat nearby, and can provide the services needed. Camera is used to send pics of their hair/beard structure.
 - **Story:** Allows users to be able to get the personal grooming care they need, without the hassle of having to plan out, test, and waste gas on finding the right barber for them.
 - **Market:** Predominantly anybody thats male and can grow hair/beards, but women can also get haircuts without the beard grooming, so basically the market expands out to anyone who has hair.
-- **Habit:** People would be able to constantly use this, as no one person gets a haircut/beard shaping at the same time each month/every few months, and due to the sheer number of people who are looking to make a few extra bucks on the side cutting hair, as well as people needing grooming, this app would be constantly used by people. 
-- **Scope:** V1 would allow customers to setup their profiles by uploading their profile pics of how their head and beard currently look, sharing their location, as well as what they are looking to get done on their head, and a brief description of the type of service to get done.  V2 would allow barbers to create profile and a quick bio of themselves, the tools they use, what they specialize in, where they are located, and a radius of how far they are willing to go. V3 would see the connection between these two, allowing users to make a request in a database of barbers who fit the needs of the user, and allowing barbers to accept the request. V4 would allow for live tracking of barber location when they are on their way, as well as any other Uber-esque features to add. 
+- **Habit:** People would be able to constantly use this, as no one person gets a haircut/beard shaping at the same time each month/every few months, and due to the sheer number of people who are looking to make a few extra bucks on the side cutting hair, as well as people needing grooming, this app would be constantly used by people.
+- **Scope:** V1 would allow customers to setup their profiles by uploading their profile pics of how their head and beard currently look, sharing their location, as well as what they are looking to get done on their head, and a brief description of the type of service to get done.  V2 would allow barbers to create profile and a quick bio of themselves, the tools they use, what they specialize in, where they are located, and a radius of how far they are willing to go. V3 would see the connection between these two, allowing users to make a request in a database of barbers who fit the needs of the user, and allowing barbers to accept the request. V4 would allow for live tracking of barber location when they are on their way, as well as any other Uber-esque features to add.
 
 ## Product Spec
 
 ### 1. User Stories (Required and Optional)
 
-#### FBU REQUIREMENTS: 
+#### FBU REQUIREMENTS:
 
 * Your app has multiple views
   -> Satisfied by the multiple screens/objects required for the account pages, ordering a barber, etc.
@@ -58,11 +58,11 @@ Uber for haircut/beard grooming, so that you can have a barber come to your hous
 * [x] Customer can share pictures of their hair, and face profiles (for beard work)
 * [x] User can share location
 * [x] User can post a brief description of what kind of service they are looking for
-* [ ]  Barber can post the services they provide, their location and how far they are willing to go
+* [x]  Barber can post the services they provide, and their location
 * [x] Barber can post price of specific services
 * [x] Client can scroll through list of available barbers and click on the services they offer, their experience, the tools they use, and book an appointment for them to come for same day or another day
 * [ ] Use fade in/out animation when scrolling through pages
-* [ ] Use filtration/sorting algorithm when displaying barbers on browse screen
+* [x] Use filtration/sorting algorithm when displaying barbers on browse screen
 * [ ] Use gesture recognizer for pinch to scale when looking at picture of clients
 
 **Optional Nice-to-have Stories**
@@ -161,7 +161,7 @@ Uber for haircut/beard grooming, so that you can have a barber come to your hous
 
 ### [BONUS] Interactive Prototype
 
-## Schema 
+## Schema
 ### Models
 #### Post
 
@@ -187,8 +187,8 @@ MODEL FOR BROWSING BARBERS
    | rating        | Number   | Rating of barber from 1-5 |
    | distance      | Number   | Approx miles away from your location |
 
-   
-   
+
+
 ### Networking
 - Home feed of appointments
   - (Read/GET) Query all posts (possible option to sort posts based on post fields which would mean specific queries)
