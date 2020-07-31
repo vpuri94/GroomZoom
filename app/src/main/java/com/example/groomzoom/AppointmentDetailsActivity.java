@@ -1,8 +1,13 @@
 package com.example.groomzoom;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -29,6 +34,7 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
     TextView tvPrice;
     TextView tvServicesList;
     String barberKey = "barber";
+    Button phoneButton;
     private ScaleGestureDetector mScaleGestureDetector;
     private float mScaleFactor = 1.0f;
 
@@ -63,6 +69,7 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
         appointment = (Appointments) Parcels.unwrap(getIntent().getParcelableExtra(Appointments.class.getSimpleName()));
         // set appointment name and price and date
         isBarber = ParseUser.getCurrentUser().getBoolean(barberKey);
+        phoneButton = (Button) findViewById(R.id.btnPhone);
 
         // display message with other user, casing on if barber or not
         if(isBarber) {
@@ -83,10 +90,27 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
         tvPrice.setText(priceMsg + appointment.getPrice());
         tvDate.setText(dateMsg + appointment.getDate()[0] + " @ " + appointment.getDate()[1]);
         ParseFile image;
-        if(isBarber)
+        if(isBarber) {
             image = appointment.getProfilePic();
-        else
+            phoneButton.setVisibility(View.GONE);
+        }
+        else {
             image = appointment.getBarberProfilePic();
+            phoneButton.setText(String.valueOf(appointment.getNumber("phoneNum")));
+            final String smsNumber  = "smsto:" + phoneButton.getText().toString();
+            phoneButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent smsIntent = new Intent(Intent.ACTION_SENDTO);
+                    smsIntent.setData(Uri.parse(smsNumber));
+                    if (smsIntent.resolveActivity(getPackageManager()) != null) {
+                        startActivity(smsIntent);
+                    } else {
+                        Log.e("TAG", "Can't resolve app for ACTION_SENDTO Intent.");
+                    }
+                }
+            });
+        }
         if (image != null) {
             Glide.with(getApplicationContext()).load(image.getUrl()).into(ivProfilepic);
         }
