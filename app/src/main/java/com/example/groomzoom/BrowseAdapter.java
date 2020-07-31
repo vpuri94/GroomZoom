@@ -147,7 +147,7 @@ public class BrowseAdapter extends RecyclerView.Adapter<BrowseAdapter.ViewHolder
 
     private void goBook(Browse browse){
         Intent gotoBookScreen = new Intent(context, Booking.class);
-        gotoBookScreen.putExtra("id", browse.getAddress().getObjectId());
+        gotoBookScreen.putExtra("id", browse.getObjectId());
         context.startActivity(gotoBookScreen);
     }
 

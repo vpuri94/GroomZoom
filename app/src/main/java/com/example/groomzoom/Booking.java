@@ -20,6 +20,7 @@ import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -49,6 +50,20 @@ public class Booking extends AppCompatActivity {
     String bookedMsg = "Booked the appointment!";
     String apptFilename = "appt.txt";
     String apptKey = "appointments";
+    String priceMsg = "price";
+    String browseId = "Browse";
+    String pfpKey = "profilePic";
+    String objectIdKey = "objectId";
+    String userRatingKey = "userRating";
+    String dateTimeFormat = "M/dd/yyyy HH";
+    String addressKey = "address";
+    String occurredKey = "occurred";
+    String ratingKey = "rating";
+    String servicesKey = "services";
+    String servicesDoneKey = "servicesDone";
+    String bookerKey = "booker";
+    String barberProfilePic = "barberProfilePic";
+    String userKey = "user";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +87,8 @@ public class Booking extends AppCompatActivity {
         values2.add(" @ 3PM");
         values2.add(" @ 4PM");
         values2.add(" @ 5PM");
+
+        // add the dates as strings to the backend
         for(int x = 0; x < values2.size(); x++){
             if(date == null){
                 SimpleDateFormat formatter = new SimpleDateFormat(dateFormat);
@@ -83,12 +100,14 @@ public class Booking extends AppCompatActivity {
         }
 
 
+        // set up view to initially be all available
         for(int x = 0; x < numTimeSlots; x++)
             availability.add(available);
 
 
 
         try {
+            // change some rows to be booked depending on backend
             checkBooking(date, objectId);
         } catch (ParseException e) {
             e.printStackTrace();
@@ -110,15 +129,16 @@ public class Booking extends AppCompatActivity {
                 }
                 if(position >= 5){
                     try {
+                        // set and confirm bookings
                         setBooking(finalDate, position - 4, objectId);
-                    } catch (ParseException e) {
+                    } catch (ParseException | java.text.ParseException e) {
                         e.printStackTrace();
                     }
                 }
                 else{
                     try {
                         setBooking(finalDate, position + 8, objectId);
-                    } catch (ParseException e) {
+                    } catch (ParseException | java.text.ParseException e) {
                         e.printStackTrace();
                     }
                 }
@@ -141,30 +161,34 @@ public class Booking extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent  = new Intent(Booking.this, CalendarActivity.class);
+                intent.putExtra(objectIdKey, objectId);
                 startActivity(intent);
             }
         });
     }
 
     private void checkBooking(final String date, String objectId) throws ParseException {
-        ParseQuery<ParseObject> query = ParseQuery.getQuery("_User");
-//        query.whereEqualTo("objectId", objectId);
-        ParseObject otherUser = null;
-        try {
-            otherUser = query.get(objectId);
-        } catch (ParseException e) {
-            e.printStackTrace();
+        // get browse object
+        ParseQuery<ParseObject> query = ParseQuery.getQuery(browseId);
+        ParseObject browse = query.get(objectId);
+        ParseFile appts = null;
+        appts = browse.getParseFile(apptKey);
+        if(appts == null){
+            return;
         }
 
-        ParseFile appts = (ParseFile) otherUser.get(apptKey);
+        // get appointment file as string
         byte[] data = appts.getData();
         String text = new String(data);
         int index = text.indexOf(date);
         List<Integer> indicesList = printIndex(text, date);
-        if(index == -1)
+        if (index == -1) {
             return;
-        if(indicesList.size() == 0)
+        }
+        if (indicesList.size() == 0){
             return;
+    }
+        // go through and check what times are booked from string value of file
         for(int x = 0; x < indicesList.size(); x++){
             int currIndex = indicesList.get(x);
             int nextIndex;
@@ -187,57 +211,55 @@ public class Booking extends AppCompatActivity {
                 }
             }
         }
-
     }
 
-    private void setBooking(String date, int time, String objectId) throws ParseException {
-        ParseQuery<ParseObject> query = ParseQuery.getQuery("_User");
-//        query.whereEqualTo("objectId", objectId);
-        ParseObject otherUser = null;
-        try {
-            otherUser = query.get(objectId);
-        } catch (ParseException e) {
-            e.printStackTrace();
+    private void setBooking(String date, int time, String objectId) throws ParseException, java.text.ParseException {
+        // get data from browse backend
+        ParseQuery<ParseObject> query = ParseQuery.getQuery(browseId);
+        ParseObject browse = query.get(objectId);
+        ParseFile appts = null;
+        appts = browse.getParseFile(apptKey);
+        String text = "";
+        if(appts != null){
+            byte[] data = appts.getData();
+            text = new String(data);
         }
 
-        ParseFile appts = (ParseFile) otherUser.get(apptKey);
-        byte[] data = appts.getData();
-        String text = new String(data);
+        // append on a new appt and push it to parse backend
         text = text.concat("\n" + date + " " + time);
         byte[] newData = text.getBytes();
         ParseFile file = new ParseFile(apptFilename, newData);
-        file.save();
-        Toasty.success(getApplicationContext(), "OTHER USER IS" + otherUser.get("address"), Toasty.LENGTH_SHORT, true).show();
-        otherUser.put(apptKey, file);
-        otherUser.save();
+        file.saveInBackground();
+        browse.put(apptKey, file);
+        browse.saveInBackground();
 
-//        ParseObject obj = ParseObject.create("Appointments");
-//        obj.put("price", 25);
-//        obj.put("occurred", false);
-//        obj.put("userRating", 5);
-//        obj.saveInBackground();
-//        ParseQuery<ParseUser> query = ParseQuery.getQuery("User");
-//
-//        query.getInBackground(username, new GetCallback<ParseUser>() {
-//            @Override
-//            public void done(ParseUser object, ParseException e) {
-//                if (e == null) {
-//                    Toast.makeText(getApplicationContext(), "SAVED", Toast.LENGTH_SHORT).show();
-//                    ParseObject newAppt = ParseObject.create("Appointments");
-//                    newAppt.put("occurred", false);
-//                     hard coded need to change
-//                    newAppt.put("price", 25);
-//                    newAppt.put("userRating", object.getNumber("rating"));
-//                    newAppt.put("profilePic", object.getParseFile("frontSelfie"));
-//                    newAppt.saveInBackground();
-//                }
-//            }
-//        });
-
-
+        // create new appt in the upcoming appt tab
+        ParseObject obj = new Appointments();
+        obj.put(priceMsg, browse.getNumber(priceMsg));
+        obj.put(occurredKey, false);
+        obj.put(userRatingKey, browse.getNumber(ratingKey));
+        obj.put(pfpKey, currentUser.getParseFile(pfpKey));
+        obj.put(servicesDoneKey, currentUser.getList(servicesKey));
+        obj.put(bookerKey, currentUser);
+        obj.put(userKey, browse.get(addressKey));
+        obj.put(barberProfilePic, browse.getParseUser(addressKey).fetchIfNeeded().get(pfpKey));
+        SimpleDateFormat sdf = new SimpleDateFormat(dateTimeFormat);
+        Date parsedDate = sdf.parse(date + " " + String.valueOf(time));
+        obj.put(dateKey, parsedDate);
+        obj.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if(e == null){
+                }
+                else{
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
 
+    // give back indices of which time slots are booked from the appointments file
     static List<Integer> printIndex(String str, String s)
     {
         List<Integer> indices = new ArrayList<>();
@@ -257,6 +279,7 @@ public class Booking extends AppCompatActivity {
     }
 
 
+    // set the list to be booked
     private void changeAvailability(ArrayList<Integer> timesBooked){
         for(int x = 0; x < timesBooked.size(); x++){
             if(timesBooked.get(x) >= 8){

@@ -57,8 +57,12 @@ private String dateKey = "date";
                     return;
                 }
 
+                Intent incomingIntent = getIntent();
+                final String objectId = incomingIntent.getStringExtra("objectId");
+
                 Intent intent = new Intent(CalendarActivity.this, Booking.class);
                 intent.putExtra(dateKey, date);
+                intent.putExtra("id", objectId);
                 startActivity(intent);
             }
         });

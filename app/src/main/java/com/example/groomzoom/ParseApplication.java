@@ -20,6 +20,7 @@ public class ParseApplication extends Application {
 
         ParseObject.registerSubclass(Appointments.class);
         ParseObject.registerSubclass(Browse.class);
+        Parse.enableLocalDatastore(this);
 
         // Use for monitoring Parse OkHttp traffic
         // Can be Level.BASIC, Level.HEADERS, or Level.BODY

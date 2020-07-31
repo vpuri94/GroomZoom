@@ -95,7 +95,7 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
 
         // display rating of barber from parse server from 0-5, in increments of 0.5
         float rating = (float) appointment.getRating();
-        rbAppt.setRating(rating = rating > 0 ? rating / 2.0f : rating);
+        rbAppt.setRating(rating);
         tvServicesList.setText(bulletedVersion(appointment.getServices()));
     }
 
