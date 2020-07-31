@@ -11,6 +11,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.parse.LogInCallback;
+import com.parse.ParseACL;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
@@ -60,10 +61,12 @@ public class LoginActivity extends AppCompatActivity implements AdapterView.OnIt
         btnSignup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // if you sign up without specifying barber or client, give back an error
                 if(optionSelected == ""){
                     Toasty.error(LoginActivity.this, signupError, Toasty.LENGTH_SHORT, true).show();
                     return;
                 }
+                // otherwise try and sign them up
                 signUp(etUsername.getText().toString(), etPassword.getText().toString());
             }
         });
@@ -72,9 +75,14 @@ public class LoginActivity extends AppCompatActivity implements AdapterView.OnIt
     private void signUp(String newName, String newPword) {
         // Create new ParseUser
         ParseUser user = new ParseUser();
+        ParseACL postACL = new ParseACL(user);
+        // allow ability to read/write to another user so you can modify their appointment list
+        postACL.setPublicWriteAccess(true);
+        user.setACL(postACL);
         // Set core properties
         user.setUsername(newName);
         user.setPassword(newPword);
+        // store if the user is a barber or not
         if (optionSelected == users[2]) {
             user.put(users[2], true);
         }
@@ -98,6 +106,7 @@ public class LoginActivity extends AppCompatActivity implements AdapterView.OnIt
         user.saveInBackground();
     }
 
+    // login the parse user with their credentials in the background thread
     private void loginUser(String username, String password) {
         ParseUser.logInInBackground(username, password, new LogInCallback() {
             @Override
@@ -121,6 +130,7 @@ public class LoginActivity extends AppCompatActivity implements AdapterView.OnIt
     }
 
 
+    // sets variable of what kind of user the person is signing up as
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
         if(i == 0){

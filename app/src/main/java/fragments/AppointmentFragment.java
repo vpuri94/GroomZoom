@@ -55,6 +55,7 @@ public static final String TAG = "AppointmentFragment";
         // Inflate the layout for this fragment
         View v =  inflater.inflate(R.layout.fragment_appointment, container, false);
         Spinner spinner = (Spinner)v.findViewById(R.id.apptSpinner);
+        // sets up the upcoming/previous appointments filter
         ArrayAdapter<String> adapterSpin = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_spinner_item, apptType);
         spinner.setAdapter(adapterSpin);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -93,14 +94,17 @@ public static final String TAG = "AppointmentFragment";
     }
 
     public void queryAppointments() {
+
         ParseUser currentUser = ParseUser.getCurrentUser();
         allAppointments.clear();
         ParseQuery<Appointments> query = ParseQuery.getQuery(Appointments.class);
         query.include(Appointments.KEY_USER);
+        // filter to show barbers if you are a client, and clients if you are a barber
         if(currentUser.getBoolean(barberKey))
             query.whereEqualTo(Appointments.KEY_USER, currentUser);
         else
             query.whereEqualTo(Appointments.KEY_BOOKER, currentUser);
+        // filter on if upcoming appointments or not
         if(upcoming)
             query.whereEqualTo(Appointments.KEY_OCCURRED, false);
         else
@@ -116,6 +120,7 @@ public static final String TAG = "AppointmentFragment";
                 adapter.notifyDataSetChanged();
             }
         });
+
     }
 
 }

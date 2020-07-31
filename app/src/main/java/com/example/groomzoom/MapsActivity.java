@@ -44,21 +44,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         String apiKey = "AIzaSyB6IevBhLGUNcVKsfjQoik6MUArUV2RyEw";
+        // if the gMaps places client isnt initialized, set it up with our apiKey
         if(!Places.isInitialized())
             Places.initialize(getApplicationContext(), apiKey);
         btnSaveAddress = (Button) findViewById(R.id.btnSaveAddress);
         btnSaveAddress.setVisibility(View.GONE);
         placesClient = Places.createClient(this);
         final AutocompleteSupportFragment autocompleteSupportFragment = (AutocompleteSupportFragment) getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
+        // set up our autcomplete google maps fragment with using the ID, lat/lng, and name of the street as its fields to take in to autocomplete
         autocompleteSupportFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.LAT_LNG, Place.Field.NAME));
 
         autocompleteSupportFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            // called when you click on an address that is your location that the autocomplete feature reccomends
             @Override
             public void onPlaceSelected(@NonNull Place place) {
                 latLng = place.getLatLng();
+                // set a new marker at that specific lat/lng
                 mMap.addMarker(new MarkerOptions().position(latLng).title(addressEnteredTitle));
+                // move the view of the GMaps to that specific address/latitude longitude point
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
                 addressResult = place.getAddress();
+                // show the "Save address" button once you have chosen an addressjifkrllnnelffkuncbjtlklgkcuccdid
                 btnSaveAddress.setVisibility(View.VISIBLE);
                 addressResult = place.getName();
             }
@@ -73,11 +79,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+
+
         btnSaveAddress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ParseUser currentUser = ParseUser.getCurrentUser();
                 ParseGeoPoint selectedLocation = new ParseGeoPoint(latLng.latitude, latLng.longitude);
+                // save the latitude and longitude in the parse backend
                 currentUser.put(mapPointKey, selectedLocation);
                 currentUser.saveInBackground();
                 Intent i = new Intent();
@@ -88,18 +97,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
         // Add a marker where you are and move the camera
         LatLng location;
+        // if no location put in, default to the facebook HQ address
         if(latLng == null) {
             location = facebookDefault;
             btnSaveAddress.setVisibility(View.INVISIBLE);
         }
         else
             location = latLng;
+        // add the marker and set the camera view to the latitude longitude
         mMap.addMarker(new MarkerOptions().position(location).title(addressEnteredTitle));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(location));
     }

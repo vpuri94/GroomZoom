@@ -89,10 +89,12 @@ public class BrowseFragment extends Fragment {
         ArrayAdapter<String> adapterSpin = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_spinner_item, sortType);
         ArrayAdapter<String> adapterSpin2 = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_spinner_item, filters);
 
+
         spinner.setAdapter(adapterSpin);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                // sets up dropdown by rating and distance for sorting by rating
                 if(i == 0){
                     sortingByRating = false;
                     highestFirst = false;
@@ -129,6 +131,7 @@ public class BrowseFragment extends Fragment {
      spinner2.setAdapter(adapterSpin2);
 
      spinner2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+         // filter by distance of X km and 4 star ratings
          @Override
          public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
              if(i == 0){
@@ -155,9 +158,11 @@ public class BrowseFragment extends Fragment {
         return v;
     }
 
+    // show a dialog that allows one to input a certain number of km to filter by
     private void showAddItemDialog(Context c) {
 
         final EditText taskEditText = new EditText(c);
+        // sets it to numeric keyboard only
         taskEditText.setInputType(InputType.TYPE_CLASS_NUMBER);
         AlertDialog dialog = new AlertDialog.Builder(c).setTitle(alertTitle).setMessage(alertMsg).setView(taskEditText).setPositiveButton(filterButton, new DialogInterface.OnClickListener() {
             @Override
@@ -180,6 +185,7 @@ public class BrowseFragment extends Fragment {
         else
             tvUserType.setText(barberBanner);
         allBrowse = new ArrayList<>();
+        // add dividers for each item to separate out each row in the recyclerview
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
         dividerItemDecoration.setDrawable(getResources().getDrawable(R.drawable.recyclerview_divider));
         rvUsers.addItemDecoration(dividerItemDecoration);
@@ -196,6 +202,7 @@ public class BrowseFragment extends Fragment {
             query.whereEqualTo(Browse.KEY_BARBER, false);
         else
             query.whereEqualTo(Browse.KEY_BARBER, true);
+        // filter by four star reviews
         if(filterByFour) {
             query.whereGreaterThanOrEqualTo(Browse.KEY_RATING, 4);
         }
@@ -205,6 +212,7 @@ public class BrowseFragment extends Fragment {
                 if(e != null){
                     return;
                 }
+                // sort the objects by either rating or distance and put them in the list of browse objects accordingly
                 try {
                     objects = sortBrowse(objects, sortingByRating, sortingByDistance);
                 } catch (ParseException ex) {
@@ -223,11 +231,13 @@ public class BrowseFragment extends Fragment {
                 }
                 else
                     allBrowse.addAll(objects);
+                // let the recyclerview know that the data set has changed
                 browseAdapter.notifyDataSetChanged();
             }
         });
     }
 
+    // call helpers for sorting by distance or rating and return the modified list
     private List<Browse> sortBrowse(List<Browse> userList, boolean sortingByRating, boolean sortingByDistance) throws ParseException {
         if(sortingByRating){
             userList = sortByRating(userList, highestFirst);
@@ -240,6 +250,7 @@ public class BrowseFragment extends Fragment {
     }
 
     public List<Browse> sortByDistance(List<Browse> newList, boolean closestFirst) throws ParseException {
+        // first get current users location and set up a blank distance list
         ParseUser currentUser = ParseUser.getCurrentUser();
         ParseGeoPoint currentLocation = currentUser.fetchIfNeeded().getParseGeoPoint(mapPointKey);
         double myLat = currentLocation.getLatitude();
@@ -249,6 +260,7 @@ public class BrowseFragment extends Fragment {
         myLocation.setLongitude(myLong);
         List<Float> distanceList = new ArrayList<>();
 
+        // then go through each user in the browseList and add the distance the user in browseList is away from currentUser
         for(Browse browse: newList){
             ParseUser eachUser = browse.getAddress();
             ParseGeoPoint newPoint = eachUser.fetchIfNeeded().getParseGeoPoint(mapPointKey);
@@ -260,6 +272,8 @@ public class BrowseFragment extends Fragment {
             distanceList.add(myLocation.distanceTo(newLocation) / 1000);
         }
 
+        // finally, once we have the distance list, go through and sort the distance list accordingly, which we
+        // can then use as a key to sort our browse list
         for(int x = 0; x < distanceList.size(); x++){
             for(int y = 0; y < distanceList.size() - 1 - x; y++){
                 if(distanceList.get(y) > distanceList.get(y+1)){
@@ -272,6 +286,7 @@ public class BrowseFragment extends Fragment {
                 }
             }
         }
+        // if we choose to have farthest to closest users instead, we can simply reverse the list
         if(!closestFirst)
             Collections.reverse(newList);
 
@@ -279,6 +294,7 @@ public class BrowseFragment extends Fragment {
     }
 
     private List<Browse> sortByRating(List<Browse> newList, boolean highestFirst) {
+        // use sort the browse list in order of increasing rating values
         for(int x = 0; x < newList.size(); x++){
             Browse min = newList.get(x);
             int minId = x;
@@ -292,6 +308,7 @@ public class BrowseFragment extends Fragment {
             newList.set(x, min);
             newList.set(minId, temp);
         }
+        // if we want highest ratings first, then simply reverse the order so its highest to lowest ratings
         if(highestFirst)
             Collections.reverse(newList);
         return newList;

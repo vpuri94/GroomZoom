@@ -23,6 +23,7 @@ public class Appointments extends ParseObject {
     public static final String datePattern = "MM-dd-yyyy";
     public static final String timePattern = "HH:mm";
 
+    // getters from the Parse server
     public ParseFile getProfilePic() {
         return getParseFile(KEY_PROFILEPIC);
     }

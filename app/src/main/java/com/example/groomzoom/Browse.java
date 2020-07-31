@@ -17,6 +17,7 @@ public static final String KEY_RATING = "rating";
 public static final String KEY_SERVICES = "services";
 public static final String KEY_ADDRESS = "address";
 
+// getters from parse server
 public String getName(){
     return getString(KEY_NAME);
 }

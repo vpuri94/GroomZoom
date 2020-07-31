@@ -36,9 +36,11 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
     private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
         @Override
         public boolean onScale(ScaleGestureDetector scaleGestureDetector){
+            // Pinch to zoom feature
             mScaleFactor *= scaleGestureDetector.getScaleFactor();
             mScaleFactor = Math.max(0.1f,
                     Math.min(mScaleFactor, 10.0f));
+            // Scales the profile picture by the factor above
             ivProfilepic.setScaleX(mScaleFactor);
             ivProfilepic.setScaleY(mScaleFactor);
             return true;
@@ -49,6 +51,7 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // initialize viws
         setContentView(R.layout.activity_appointment_details);
         tvApptname = (TextView) findViewById(R.id.tvApptname);
         tvPrice = (TextView) findViewById(R.id.tvPrice);
@@ -60,8 +63,11 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
         appointment = (Appointments) Parcels.unwrap(getIntent().getParcelableExtra(Appointments.class.getSimpleName()));
         // set appointment name and price and date
         isBarber = ParseUser.getCurrentUser().getBoolean(barberKey);
+
+        // display message with other user, casing on if barber or not
         if(isBarber) {
             try {
+                // use fetchifneeded if parse user has not been fetchd
                 tvApptname.setText(appointmentMsg + appointment.getBooker().fetchIfNeeded().getUsername());
             } catch (ParseException e) {
                 e.printStackTrace();
@@ -87,6 +93,7 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
 
         mScaleGestureDetector = new ScaleGestureDetector(this, new ScaleListener());
 
+        // display rating of barber from parse server from 0-5, in increments of 0.5
         float rating = (float) appointment.getRating();
         rbAppt.setRating(rating = rating > 0 ? rating / 2.0f : rating);
         tvServicesList.setText(bulletedVersion(appointment.getServices()));
@@ -100,6 +107,7 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
 
     }
 
+    // string manipulation to display a preview of list of services
     public String bulletedVersion(List<String> listOfServices){
         String bulletedConcatCopy = "";
         for(int x = 0; x < listOfServices.size(); x++){

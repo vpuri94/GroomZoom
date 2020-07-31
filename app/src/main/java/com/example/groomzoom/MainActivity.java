@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                // switch statemnts to open up the three core tabs of the app: Browse, Appointments, and My Profile
                 Fragment fragment;
                 switch (menuItem.getItemId()){
                     case R.id.action_browse:
@@ -40,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
                         fragment = new AppointmentFragment();
                         break;
                     }
+                    // load up the selected view
                     fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
                 return true;
             }

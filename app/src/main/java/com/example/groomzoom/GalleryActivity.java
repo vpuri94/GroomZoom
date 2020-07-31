@@ -52,6 +52,7 @@ public class GalleryActivity extends AppCompatActivity {
         tvFront = (TextView) findViewById(R.id.tvFront);
         tvRight = (TextView) findViewById(R.id.tvRight);
 
+        // when clicking the front facial profile button, launch the camera
         btnFrontPic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -59,6 +60,7 @@ public class GalleryActivity extends AppCompatActivity {
             }
         });
 
+        // if the current user is a barber, hide the left and right selfie options
         if(currentUser.getBoolean(barberKey)){
             btnLeftPic.setVisibility(View.GONE);
             btnRightPic.setVisibility(View.GONE);
@@ -86,6 +88,7 @@ public class GalleryActivity extends AppCompatActivity {
         Intent changePictures = new Intent(getApplicationContext(), CustomCamera.class);
         changePictures.putExtra(directionKey, key);
         startActivityForResult(changePictures, 69);
+        // fade in/out animation when launching the camera
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 

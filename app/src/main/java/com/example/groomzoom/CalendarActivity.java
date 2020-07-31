@@ -30,12 +30,14 @@ private String dateKey = "date";
         mCalendarView = (CalendarView) findViewById(R.id.calendarView);
 
         mCalendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
+            // called whenever a new date is selected from the calendar view
             @Override
             public void onSelectedDayChange(@NonNull CalendarView calendarView, int month, int year, int day) {
                 String date = (year + 1) + "/" + day + "/" + month;
                 SimpleDateFormat formatter = new SimpleDateFormat(datePattern);
                 Date selectedDate = null;
                 try {
+                    // save the selected date in the M/dd/yyyy pattern
                     selectedDate = formatter.parse(date);
                 } catch (ParseException e) {
                     e.printStackTrace();
@@ -43,11 +45,13 @@ private String dateKey = "date";
                 Date currDate = new Date();
                 String currDateStr = formatter.format(currDate);
                 try {
+                    // save the current date in the M/dd/yyyy pattern
                     currDate = formatter.parse(currDateStr);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-
+                //and then compare the two dates
+                // if you select a date in the past, give back an error message
                 if(selectedDate.compareTo(currDate) < 0){
                     Toasty.error(getApplicationContext(), futureError, Toasty.LENGTH_SHORT, true).show();
                     return;

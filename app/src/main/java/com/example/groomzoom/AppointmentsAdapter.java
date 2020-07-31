@@ -78,6 +78,7 @@ public class AppointmentsAdapter extends RecyclerView.Adapter<AppointmentsAdapte
             // Bind the post data to the view elements
             boolean isBarber;
             isBarber = ParseUser.getCurrentUser().getBoolean(barberKey);
+            // display two different customized messages if current user is barber or not
             if(isBarber) {
                 tvUsername.setText(AppointmentDetailsActivity.appointmentMsg + appointment.getBooker().fetchIfNeeded().getUsername());
                 tvService.setText(requestMsg + servicePreview(appointment.getServices()));

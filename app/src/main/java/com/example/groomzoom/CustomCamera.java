@@ -103,6 +103,7 @@ public class CustomCamera extends AppCompatActivity {
 
         Intent intent = getIntent();
         final String direction = intent.getStringExtra(directionKey);
+        // depending on if you choose a front, left, or right camera, take a picture with a message in that direction
         Toasty.info(getApplicationContext(), pictureMsg + direction, Toasty.LENGTH_SHORT, true).show();
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -123,6 +124,7 @@ public class CustomCamera extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if(requestCode == 101){
             if(grantResults[0] == PackageManager.PERMISSION_DENIED){
+                // if you dont have camera permissions, then give an error message
                 Toasty.warning(getApplicationContext(), cameraPermissionMsg, Toasty.LENGTH_LONG, true).show();
             }
         }
@@ -155,6 +157,7 @@ public class CustomCamera extends AppCompatActivity {
 };
 
 private final CameraDevice.StateCallback stateCallback = new CameraDevice.StateCallback() {
+    // called when camera device is open
     @Override
     public void onOpened(@NonNull CameraDevice camera) {
         cameraDevice = camera;
@@ -179,10 +182,12 @@ private final CameraDevice.StateCallback stateCallback = new CameraDevice.StateC
 };
 
     private void createCameraPreview() throws CameraAccessException {
+        // create the texture view for the camera surface
         SurfaceTexture texture = textureView.getSurfaceTexture();
         texture.setDefaultBufferSize(imageDimensions.getWidth(), imageDimensions.getHeight());
         Surface surface = new Surface(texture);
 
+        // create a camera capture request
         captureRequestBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
         captureRequestBuilder.addTarget(surface);
         cameraDevice.createCaptureSession(Arrays.asList(surface), new CameraCaptureSession.StateCallback() {
@@ -192,6 +197,7 @@ private final CameraDevice.StateCallback stateCallback = new CameraDevice.StateC
                     return;
                 cameraCaptureSession = session;
                 try {
+                    // once the camera is initialized, set up the camera picture request buiilder
                     updatePreview();
                 } catch (CameraAccessException e) {
                     e.printStackTrace();
@@ -209,23 +215,27 @@ private final CameraDevice.StateCallback stateCallback = new CameraDevice.StateC
         if(cameraDevice == null){
             return;
         }
+        // set up the camera capture session with the repeating request
         captureRequestBuilder.set(CaptureRequest.CONTROL_MODE, CameraMetadata.CONTROL_MODE_AUTO);
 
         cameraCaptureSession.setRepeatingRequest(captureRequestBuilder.build(), null, mBackgroundHandler);
 
     }
 
-
+    //
     private void openCamera() throws CameraAccessException {
         CameraManager manager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
 
+        // use the front camera, not back
         cameraId = manager.getCameraIdList()[1];
 
         CameraCharacteristics characteristics = manager.getCameraCharacteristics(cameraId);
         StreamConfigurationMap map = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
 
+        // get the image dimensions from the picture
         imageDimensions = map.getOutputSizes(SurfaceTexture.class)[0];
 
+        // write to the external storage
         if(ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) !=
                 PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this,
@@ -235,6 +245,7 @@ private final CameraDevice.StateCallback stateCallback = new CameraDevice.StateC
             ActivityCompat.requestPermissions(CustomCamera.this, new String[]{Manifest.permission.CAMERA,Manifest.permission.WRITE_EXTERNAL_STORAGE}, 101);
             return;
         }
+        // finally open the camera with the details above
         manager.openCamera(cameraId, stateCallback, null);
 
     }
@@ -248,6 +259,7 @@ private final CameraDevice.StateCallback stateCallback = new CameraDevice.StateC
 
         jpegSizes = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP).getOutputSizes(ImageFormat.JPEG);
 
+        // set up the camera with the dimensions below
         int width = 640;
         int height = 480;
 
@@ -255,6 +267,8 @@ private final CameraDevice.StateCallback stateCallback = new CameraDevice.StateC
             width = jpegSizes[0].getWidth();
             height = jpegSizes[0].getHeight();
         }
+
+        // use an imagereader of the following size and dimensions
         ImageReader reader = ImageReader.newInstance(width,height, ImageFormat.JPEG, 1);
         List<Surface> outputSurfaces = new ArrayList<>(2);
         outputSurfaces.add(reader.getSurface());
@@ -272,6 +286,7 @@ private final CameraDevice.StateCallback stateCallback = new CameraDevice.StateC
         Long tsLong = System.currentTimeMillis() / 1000;
         String ts = tsLong.toString();
 
+        // save the file name in the local android directory with the time and username of the person
         file = new File(Environment.getDataDirectory() + "/" + ts + jpgExtension);
 
         ImageReader.OnImageAvailableListener readerListener = new ImageReader.OnImageAvailableListener() {
@@ -282,6 +297,7 @@ private final CameraDevice.StateCallback stateCallback = new CameraDevice.StateC
                 ByteBuffer buffer = image.getPlanes()[0].getBuffer();
                 byte[] bytes = new byte[buffer.capacity()];
                 buffer.get(bytes);
+                // set up the byte array to be able to save data to accomodate data to the appropriate size
                 try {
                     save(bytes);
                 } catch (IOException e) {
@@ -294,6 +310,7 @@ private final CameraDevice.StateCallback stateCallback = new CameraDevice.StateC
                 final ParseUser currentUser = ParseUser.getCurrentUser();
                 String username = currentUser.getUsername();
                 ParseFile newSelfie = null;
+                // save the file to either the profile pic, the left, or right picture
                 if(direction.equals(frontMsg)){
                     newSelfie = new ParseFile(username + frontKey + pngExtension, bytes);
                     parseKey = frontKey;
@@ -318,8 +335,10 @@ private final CameraDevice.StateCallback stateCallback = new CameraDevice.StateC
                                     return;
                                 }
                             });
+                            // success message if it successfully saved to parse backend
                             Toasty.success(getApplicationContext(), updatedMsg, Toasty.LENGTH_SHORT,true).show();
                         }else{
+                            // error msg otherwise
                             Toasty.error(getApplicationContext(), errorMsg, Toasty.LENGTH_SHORT, true).show();
                         }
                     }
@@ -344,6 +363,7 @@ private final CameraDevice.StateCallback stateCallback = new CameraDevice.StateC
             @Override
             public void onConfigured(CameraCaptureSession session) {
                 try {
+                    // actually capture the session of the picture
                     session.capture(captureBuilder.build(), captureListener, mBackgroundHandler);
                 } catch (CameraAccessException e) {
                     e.printStackTrace();
@@ -358,6 +378,7 @@ private final CameraDevice.StateCallback stateCallback = new CameraDevice.StateC
     }
 
     private void save(byte[] bytes) throws IOException {
+        // save the bytes to the output stream
         OutputStream outputStream = null;
         outputStream = new FileOutputStream(file);
         outputStream.write(bytes);
@@ -383,6 +404,7 @@ private final CameraDevice.StateCallback stateCallback = new CameraDevice.StateC
     }
 
     private void startBackgroundThread() {
+        // start a background thread to handle tasks of camera in background process
         mBackgroundThread = new HandlerThread(backgroundThread);
         mBackgroundThread.start();
         mBackgroundHandler = new Handler(mBackgroundThread.getLooper());
@@ -392,6 +414,7 @@ private final CameraDevice.StateCallback stateCallback = new CameraDevice.StateC
     @Override
     protected void onPause() {
         try {
+            // if we pause taking a camera picture then the background thread ends
             stopBackgroundThread();
         } catch (InterruptedException e) {
             e.printStackTrace();

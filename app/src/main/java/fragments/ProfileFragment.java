@@ -122,6 +122,7 @@ public class ProfileFragment extends Fragment {
     }
 
     public void serviceChanges(View v){
+        // go through each service checkbox, and if its checked, add it to the serviceList of offered services
         List<String> serviceList = new ArrayList<String>();
         if(cbHaircut.isChecked())
             serviceList.add(String.valueOf(cbHaircut.getText()));
@@ -137,8 +138,6 @@ public class ProfileFragment extends Fragment {
         Toasty.success(getContext(), saveChangesMsg, Toasty.LENGTH_LONG, true).show();
         myself.saveInBackground();
     }
-
-
 
     private void goToStartScreen() {
         Intent goToStartScreen = new Intent(this.getContext(), LoginActivity.class);
@@ -175,6 +174,8 @@ public class ProfileFragment extends Fragment {
         myServices.add(cbWax);
         myServices.add(cbBlowdry);
 
+        // go through the list of services that i have checked off in the parse backend
+        // and if it exists in the Parse backend, then check off the box in the view
         List<String> myPrefs = myself.getList(servicesKey);
         if (myPrefs != null) {
             for (int x = 0; x < myServices.size(); x++) {

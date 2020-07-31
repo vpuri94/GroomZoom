@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.parse.FindCallback;
 import com.parse.GetCallback;
+import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
@@ -60,6 +61,7 @@ public class Booking extends AppCompatActivity {
         String date = incomingIntent.getStringExtra(dateKey);
         final String objectId = incomingIntent.getStringExtra(idKey);
 
+
         values2.add(" @ 8AM");
         values2.add(" @ 9AM");
         values2.add(" @ 10AM");
@@ -87,7 +89,7 @@ public class Booking extends AppCompatActivity {
 
 
         try {
-            checkBooking(date);
+            checkBooking(date, objectId);
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -122,7 +124,7 @@ public class Booking extends AppCompatActivity {
                 }
                 Toasty.success(getApplicationContext(), bookedMsg, Toasty.LENGTH_SHORT, true).show();
                 try {
-                    checkBooking(finalDate);
+                    checkBooking(finalDate, objectId);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -144,8 +146,17 @@ public class Booking extends AppCompatActivity {
         });
     }
 
-    private void checkBooking(final String date) throws ParseException {
-        ParseFile appts = (ParseFile) currentUser.get(apptKey);
+    private void checkBooking(final String date, String objectId) throws ParseException {
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("_User");
+//        query.whereEqualTo("objectId", objectId);
+        ParseObject otherUser = null;
+        try {
+            otherUser = query.get(objectId);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        ParseFile appts = (ParseFile) otherUser.get(apptKey);
         byte[] data = appts.getData();
         String text = new String(data);
         int index = text.indexOf(date);
@@ -176,18 +187,29 @@ public class Booking extends AppCompatActivity {
                 }
             }
         }
+
     }
 
-    private void setBooking(String date, int time, String username) throws ParseException {
-        ParseFile appts = (ParseFile) currentUser.get(apptKey);
+    private void setBooking(String date, int time, String objectId) throws ParseException {
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("_User");
+//        query.whereEqualTo("objectId", objectId);
+        ParseObject otherUser = null;
+        try {
+            otherUser = query.get(objectId);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        ParseFile appts = (ParseFile) otherUser.get(apptKey);
         byte[] data = appts.getData();
         String text = new String(data);
         text = text.concat("\n" + date + " " + time);
         byte[] newData = text.getBytes();
         ParseFile file = new ParseFile(apptFilename, newData);
-        file.saveInBackground();
-        currentUser.put(apptKey, file);
-        currentUser.saveInBackground();
+        file.save();
+        Toasty.success(getApplicationContext(), "OTHER USER IS" + otherUser.get("address"), Toasty.LENGTH_SHORT, true).show();
+        otherUser.put(apptKey, file);
+        otherUser.save();
 
 //        ParseObject obj = ParseObject.create("Appointments");
 //        obj.put("price", 25);

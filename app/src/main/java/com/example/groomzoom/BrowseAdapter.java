@@ -84,9 +84,11 @@ public class BrowseAdapter extends RecyclerView.Adapter<BrowseAdapter.ViewHolder
             btnBook = itemView.findViewById(R.id.btnBook);
         }
 
+        // binds date from each browse object to views
         public void bind(final Browse browse) throws ParseException {
             tvName.setText(browse.getName());
             String preview = servicePreview(browse.getServices());
+            // two different messages differentiated on if barber or not
             if(browse.getBarber())
                 tvService.setText(offerMsg + preview);
             else
@@ -108,6 +110,7 @@ public class BrowseAdapter extends RecyclerView.Adapter<BrowseAdapter.ViewHolder
             });
         }
 
+        // another string manipulation on displaying a preview of list of services
         public String servicePreview(List<String> services){
             String servPreview = "";
             for(int x = 0; x < services.size() ; x++){
@@ -119,15 +122,18 @@ public class BrowseAdapter extends RecyclerView.Adapter<BrowseAdapter.ViewHolder
         }
     }
 
+    // gets distance from the current user to each user in the browse recyclerView
     public float getDistance(Browse browse) throws ParseException {
         ParseUser currentUser = ParseUser.getCurrentUser();
         ParseGeoPoint currentLocation = currentUser.fetchIfNeeded().getParseGeoPoint(mapPointKey);
         double myLat = currentLocation.getLatitude();
         double myLong = currentLocation.getLongitude();
+        // get longitude and latitude from Parse GeoPoint from Google Maps activity and store as new location object
         Location myLocation = new Location(myLocationKey);
         myLocation.setLatitude(myLat);
         myLocation.setLongitude(myLong);
 
+        // get other longitude and latitude from the other user and store as a different location object
         ParseUser eachUser = browse.getAddress();
         ParseGeoPoint newPoint = eachUser.fetchIfNeeded().getParseGeoPoint(mapPointKey);
         double newLat = newPoint.getLatitude();
@@ -135,12 +141,13 @@ public class BrowseAdapter extends RecyclerView.Adapter<BrowseAdapter.ViewHolder
         Location newLocation = new Location(newLocationKey);
         newLocation.setLongitude(newLong);
         newLocation.setLatitude(newLat);
+        // return distance between the two (divide by 1000 to convert m to km)
         return myLocation.distanceTo(newLocation) / 1000;
     }
 
     private void goBook(Browse browse){
         Intent gotoBookScreen = new Intent(context, Booking.class);
-        gotoBookScreen.putExtra("id", browse.getObjectId());
+        gotoBookScreen.putExtra("id", browse.getAddress().getObjectId());
         context.startActivity(gotoBookScreen);
     }
 
