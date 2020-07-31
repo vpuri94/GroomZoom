@@ -34,6 +34,8 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
     TextView tvPrice;
     TextView tvServicesList;
     String barberKey = "barber";
+    String phoneNumKey = "phoneNum";
+    String smsFormat = "smsto:";
     Button phoneButton;
     private ScaleGestureDetector mScaleGestureDetector;
     private float mScaleFactor = 1.0f;
@@ -96,8 +98,10 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
         }
         else {
             image = appointment.getBarberProfilePic();
-            phoneButton.setText(String.valueOf(appointment.getNumber("phoneNum")));
-            final String smsNumber  = "smsto:" + phoneButton.getText().toString();
+            // get phone number from parsebackend
+            phoneButton.setText(String.valueOf(appointment.getNumber(phoneNumKey)));
+            final String smsNumber  = smsFormat + phoneButton.getText().toString();
+            // send text as implicit intent
             phoneButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -106,7 +110,7 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
                     if (smsIntent.resolveActivity(getPackageManager()) != null) {
                         startActivity(smsIntent);
                     } else {
-                        Log.e("TAG", "Can't resolve app for ACTION_SENDTO Intent.");
+                        return;
                     }
                 }
             });

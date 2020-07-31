@@ -70,7 +70,7 @@ Uber for haircut/beard grooming, so that you can have a barber come to your hous
 * [ ] Live tracking of barbers when an "order" is confirmed (like how you can track an Ubereats order when its on the way)
 * [ ] Ability for barber to post pictures of their equipment
 * [ ] Ability for profile pictures
-* [ ] Ability for messaging between barbers and clients
+* [x] Ability for messaging between barbers and clients
 * [ ] Ability for maps feature to default to automatically get your location and reccoment it as your address
 
 ### 2. Screen Archetypes
