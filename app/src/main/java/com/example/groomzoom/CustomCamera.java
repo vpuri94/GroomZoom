@@ -424,6 +424,7 @@ private final CameraDevice.StateCallback stateCallback = new CameraDevice.StateC
     }
 
     protected void stopBackgroundThread() throws InterruptedException {
+        // end the background process
         mBackgroundThread.quitSafely();
         mBackgroundThread.join();
         mBackgroundThread = null;

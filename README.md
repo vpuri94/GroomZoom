@@ -61,9 +61,9 @@ Uber for haircut/beard grooming, so that you can have a barber come to your hous
 * [x]  Barber can post the services they provide, and their location
 * [x] Barber can post price of specific services
 * [x] Client can scroll through list of available barbers and click on the services they offer, their experience, the tools they use, and book an appointment for them to come for same day or another day
-* [ ] Use fade in/out animation when scrolling through pages
+* [x] Use fade in/out animation when scrolling through pages
 * [x] Use filtration/sorting algorithm when displaying barbers on browse screen
-* [ ] Use gesture recognizer for pinch to scale when looking at picture of clients
+* [x] Use gesture recognizer for pinch to scale when looking at picture of clients
 
 **Optional Nice-to-have Stories**
 
@@ -209,4 +209,28 @@ MODEL FOR BROWSING BARBERS
   - (Read/GET) Get info about current user (name, services, address, location, pfp)
   - (Update/PUT) Update user profile image (side profile pics if applicable) and other user components (name, services wanted/offered, address, payment, etc.)
   - (Create/POST) Create a new user/information about the user
+
+
+### Design choices
+- Parse Backend:
+  - Used Parse backend due to familiarity with it from Codepath material as well as ease of use with Parse Queries
+
+- RecyclerView for Appointments and Browse:
+  - Due to familiarity from Codepath material as well as fluidity of movement
+
+- ListView for Booking functionality:
+  - Due to much easier implementation than RecyclerView, as well simplicity of displaying time blocks, and ability to easily click on each element and book
+
+- Storing appointments as txt file in Parse backend
+  - Storing as an array of Appointment objects and then saving it in the Parse backend proved to be impossible/extremely time pressing to implement, so saving each appointment as a row in a txt file, then saving the file in the Parse backend as a ParseFile was most effective
+
+- Getting distance between users as a Location object and storing addresses as latitude/longitude
+  - Parse has a column type of GeoPoint, which is a latitude and longitude and thus made it very easy to store lat/long in Parse, and also, the Location library makes it very easy to calculate distance between two "addresses" (latitude/longitude pairs) with the "distance" function in the Location library
+
+- Using Camera2 API vs. in built camera function to Android
+  - Chose Camera2 API due to the ability to be able to customize to my preferences (i.e use it and directly upload to Parse backend, have a custom Toast message, custom Capture button)
+
+- Toasty external library
+  - Allows for ability to have more visually aesthetic and relevent error messages for my app (allows me to better indicate when there is an error with the red color, and info box that is white when giving information to user)
+
 # GroomZoom
