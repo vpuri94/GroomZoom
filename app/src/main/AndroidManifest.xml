@@ -11,7 +11,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.SEND_SMS"/>
+    <uses-permission android:name="android.permission.SEND_SMS" />
 
     <uses-feature android:name="android.hardware.camera2.full" />
 
@@ -24,8 +24,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".CalendarActivity"></activity>
-        <activity android:name=".Booking"></activity>
+        <activity android:name=".SignupActivity"></activity>
+        <activity android:name=".CalendarActivity" />
+        <activity android:name=".Booking" />
         <activity android:name=".CustomCamera" />
         <activity android:name=".GalleryActivity" />
         <!--

@@ -8,7 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import com.parse.LogInCallback;
 import com.parse.ParseACL;
@@ -42,7 +42,7 @@ public class LoginActivity extends AppCompatActivity implements AdapterView.OnIt
         etUsername = findViewById(R.id.etUsername);
         etPassword = findViewById(R.id.etPassword);
         btnLogin = findViewById(R.id.btnLogin);
-        btnSignup = findViewById(R.id.btnSignup);
+        btnSignup = findViewById(R.id.btnPictures);
         Spinner spin = (Spinner) findViewById(R.id.spinner);
         spin.setOnItemSelectedListener(this);
         // Creating the arrayadapter instance of the user list
@@ -75,10 +75,6 @@ public class LoginActivity extends AppCompatActivity implements AdapterView.OnIt
     private void signUp(String newName, String newPword) {
         // Create new ParseUser
         ParseUser user = new ParseUser();
-        ParseACL postACL = new ParseACL(user);
-        // allow ability to read/write to another user so you can modify their appointment list
-        postACL.setPublicWriteAccess(true);
-        user.setACL(postACL);
         // Set core properties
         user.setUsername(newName);
         user.setPassword(newPword);
@@ -98,7 +94,7 @@ public class LoginActivity extends AppCompatActivity implements AdapterView.OnIt
                 }
                 else{
                     // Sign up worked
-                    goMainActivity();
+                    goSignUpActivity();
                     Toasty.success(LoginActivity.this, signupSuccess, Toasty.LENGTH_SHORT, true).show();
                 }
             }
@@ -126,6 +122,12 @@ public class LoginActivity extends AppCompatActivity implements AdapterView.OnIt
     private void goMainActivity() {
         Intent goToMain  = new Intent(this, MainActivity.class);
         startActivity(goToMain);
+        finish();
+    }
+
+    private void goSignUpActivity(){
+        Intent goFinishSignup = new Intent(this, SignupActivity.class);
+        startActivity(goFinishSignup);
         finish();
     }
 
