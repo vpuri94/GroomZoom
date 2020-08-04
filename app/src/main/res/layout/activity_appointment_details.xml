@@ -88,8 +88,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:text="Message"
         app:layout_constraintTop_toBottomOf="@+id/tvServicesList"
-        tools:layout_editor_absoluteX="0dp"
-        tools:text="5713838048" />
+        tools:layout_editor_absoluteX="0dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -99,8 +99,8 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
         else {
             image = appointment.getBarberProfilePic();
             // get phone number from parsebackend
-            phoneButton.setText(String.valueOf(appointment.getNumber(phoneNumKey)));
-            final String smsNumber  = smsFormat + phoneButton.getText().toString();
+            String phoneNumber = String.valueOf(appointment.getNumber(phoneNumKey));
+            final String smsNumber  = smsFormat + phoneNumber;
             // send text as implicit intent
             phoneButton.setOnClickListener(new View.OnClickListener() {
                 @Override
