@@ -7,8 +7,12 @@ import androidx.fragment.app.FragmentManager;
 
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 
+import com.gauravk.bubblenavigation.BubbleNavigationLinearView;
+import com.gauravk.bubblenavigation.listener.BubbleNavigationChangeListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.parse.ParseUser;
 
 import es.dmoral.toasty.Toasty;
 import fragments.AppointmentFragment;
@@ -18,35 +22,37 @@ import fragments.ProfileFragment;
 public class MainActivity extends AppCompatActivity {
 
     final FragmentManager fragmentManager = getSupportFragmentManager();
-    private BottomNavigationView bottomNavigationView;
-
+//    private BottomNavigationView bottomNavigationView;
+    public BubbleNavigationLinearView bubbleNavigation;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        bottomNavigationView = findViewById(R.id.bottomNavigation);
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+        bubbleNavigation = findViewById(R.id.bubbleNavigation);
+
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new BrowseFragment()).commit();
+        
+        bubbleNavigation.setNavigationChangeListener(new BubbleNavigationChangeListener() {
             @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                // switch statemnts to open up the three core tabs of the app: Browse, Appointments, and My Profile
+            public void onNavigationChanged(View view, int position) {
                 Fragment fragment;
-                switch (menuItem.getItemId()){
-                    case R.id.action_browse:
+                switch (position){
+                    case 0:
                         fragment = new BrowseFragment();
                         break;
-                    case R.id.action_profile:
+                    case 1:
+                        fragment = new AppointmentFragment();
+                        break;
+                    case 2:
                         fragment = new ProfileFragment();
                         break;
                     default:
-                        fragment = new AppointmentFragment();
-                        break;
-                    }
-                    // load up the selected view
-                    fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
-                return true;
+                        throw new IllegalStateException("Unexpected value: " + position);
+                }
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
             }
         });
-        bottomNavigationView.setSelectedItemId(R.id.action_browse);
+
 
     }
 
