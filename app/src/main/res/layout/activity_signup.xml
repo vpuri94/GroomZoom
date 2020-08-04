@@ -9,6 +9,16 @@
     tools:context=".SignupActivity">
 
     <EditText
+        android:id="@+id/etName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:gravity="start|top"
+        android:hint="Enter First and Last Name"
+        android:inputType="textMultiLine"
+        android:textAlignment="center" />
+
+    <EditText
         android:id="@+id/etEmailAddress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -33,6 +43,15 @@
         android:ems="10"
         android:hint="Enter Price of Your Services"
         android:inputType="number"
+        android:textAlignment="center" />
+
+    <EditText
+        android:id="@+id/editTextPhone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Enter Phone Number (7031234567 format)"
+        android:inputType="phone"
         android:textAlignment="center" />
 
     <TextView

@@ -22,6 +22,8 @@ import com.parse.ParseUser;
 
 import java.util.List;
 
+import es.dmoral.toasty.Toasty;
+
 
 public class BrowseAdapter extends RecyclerView.Adapter<BrowseAdapter.ViewHolder> {
 

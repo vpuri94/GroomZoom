@@ -10,10 +10,15 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 
+import com.parse.ParseException;
 import com.parse.ParseFile;
+import com.parse.ParseObject;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import es.dmoral.toasty.Toasty;
@@ -29,6 +34,8 @@ public class SignupActivity extends AppCompatActivity {
     private CheckBox cbBeard;
     private CheckBox cbWax;
     private CheckBox cbBlowdry;
+    private EditText etPhone;
+    private EditText etName;
     public static final int requestCodeNum = 999;
     public static final int requestCodeNum2 = 1000;
     String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
@@ -43,10 +50,16 @@ public class SignupActivity extends AppCompatActivity {
     String invalidPriceMsg = "First input a price";
     String noAddressMsg = "First input a postal address!";
     String serviceMsg = "Must Select atleast one service!";
+    String noNameMsg = "Must enter a first and last name!";
     String emailKey = "email";
     String priceKey = "price";
     String geokey = "mapPoint";
-
+    String usernameKey = "username";
+    String profilePicKey = "profilePic";
+    String nameKey = "name";
+    String ratingKey = "rating";
+    String phoneKey = "phoneNum";
+    String phoneMsg = "Please enter a valid phone number!";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +74,8 @@ public class SignupActivity extends AppCompatActivity {
         cbWax = (CheckBox)findViewById(R.id.cbWax2);
         cbBlowdry = (CheckBox) findViewById(R.id.cbBlowdry2);
         btnPictures = findViewById(R.id.btnPictures);
+        etPhone = findViewById(R.id.editTextPhone);
+        etName = findViewById(R.id.etName);
 
         btnAddress.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,14 +84,20 @@ public class SignupActivity extends AppCompatActivity {
             }
         });
 
-        if(!currentUser.getBoolean(barberKey))
+        if(!currentUser.getBoolean(barberKey)) {
             etPrice.setVisibility(View.GONE);
+            etPhone.setVisibility(View.GONE);
+        }
 
         btnPictures.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(etEmail.getText().toString().isEmpty()){
                     Toasty.error(getApplicationContext(), noEmailMsg, Toasty.LENGTH_SHORT, true).show();
+                    return;
+                }
+                if(etName.getText().toString().isEmpty()){
+                    Toasty.error(getApplicationContext(), noNameMsg, Toasty.LENGTH_SHORT, true).show();
                     return;
                 }
                 if(!etEmail.getText().toString().trim().matches(emailPattern)){
@@ -86,6 +107,10 @@ public class SignupActivity extends AppCompatActivity {
                 if(currentUser.getBoolean(barberKey)) {
                     if (etPrice.getText().toString().isEmpty()) {
                         Toasty.error(getApplicationContext(), invalidPriceMsg, Toasty.LENGTH_SHORT, true).show();
+                        return;
+                    }
+                    if(etPhone.getText().toString().isEmpty() || etPhone.getText().toString().length() != 10){
+                        Toasty.error(getApplicationContext(), phoneMsg, Toasty.LENGTH_SHORT, true).show();
                         return;
                     }
                 }
@@ -98,14 +123,44 @@ public class SignupActivity extends AppCompatActivity {
                     return;
                 }
                 currentUser.put(emailKey, etEmail.getText().toString());
-                currentUser.put(priceKey, Integer.valueOf(etPrice.getText().toString()));
+                if(currentUser.getBoolean(barberKey)) {
+                    currentUser.put(priceKey, Integer.valueOf(etPrice.getText().toString()));
+                    currentUser.put(phoneKey, etPhone.getText().toString());
+                }
+                currentUser.put(nameKey, etName.getText().toString());
                 serviceChanges(view);
                 currentUser.saveInBackground();
+                createNewBrowseObject();
                 goMainActivity();
             }
         });
 
     }
+
+    private void createNewBrowseObject() {
+        ParseObject obj = new Browse();
+        obj.put(profilePicKey, currentUser.getParseFile(profilePicKey));
+        obj.put(usernameKey, currentUser.getString(usernameKey));
+        obj.put(nameKey, currentUser.getString(nameKey));
+        obj.put(barberKey, currentUser.getBoolean(barberKey));
+        obj.put(ratingKey, currentUser.getNumber(ratingKey));
+        obj.put(servicesKey, currentUser.getList(servicesKey));
+        obj.put(addressKey, currentUser);
+        obj.put(priceKey, currentUser.getNumber(priceKey));
+        obj.put(phoneKey, currentUser.getString(phoneKey));
+        obj.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e == null) {
+                } else {
+                    e.printStackTrace();
+
+                }
+            }
+        });
+    }
+
+
     private void goEnterAddress(){
         Intent googleMaps = new Intent(getApplicationContext(), MapsActivity.class);
         startActivityForResult(googleMaps, requestCodeNum);
