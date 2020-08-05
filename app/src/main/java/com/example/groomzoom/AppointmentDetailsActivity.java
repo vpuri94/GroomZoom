@@ -20,6 +20,8 @@ import com.parse.ParseUser;
 import org.parceler.Parcels;
 import java.util.List;
 
+import es.dmoral.toasty.Toasty;
+
 public class AppointmentDetailsActivity extends AppCompatActivity {
     // the appointment to display
     Appointments appointment;
@@ -99,7 +101,8 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
         else {
             image = appointment.getBarberProfilePic();
             // get phone number from parsebackend
-            String phoneNumber = String.valueOf(appointment.getNumber(phoneNumKey));
+            String phoneNumber = appointment.getString(phoneNumKey);
+            Toasty.success(getApplicationContext(), "Phone num is "+phoneNumber, Toasty.LENGTH_SHORT, true).show();
             final String smsNumber  = smsFormat + phoneNumber;
             // send text as implicit intent
             phoneButton.setOnClickListener(new View.OnClickListener() {

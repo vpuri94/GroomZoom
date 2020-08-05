@@ -130,7 +130,7 @@ public class Booking extends AppCompatActivity {
                 if(position >= 5){
                     try {
                         // set and confirm bookings
-                        setBooking(finalDate, position - 4, objectId);
+                        setBooking(finalDate, position + 8, objectId);
                     } catch (ParseException | java.text.ParseException e) {
                         e.printStackTrace();
                     }
@@ -239,6 +239,7 @@ public class Booking extends AppCompatActivity {
         obj.put(occurredKey, false);
         obj.put(userRatingKey, browse.getNumber(ratingKey));
         obj.put(pfpKey, currentUser.getParseFile(pfpKey));
+        obj.put("phoneNum", browse.getString("phoneNum"));
         obj.put(servicesDoneKey, currentUser.getList(servicesKey));
         obj.put(bookerKey, currentUser);
         obj.put(userKey, browse.get(addressKey));

@@ -24,8 +24,13 @@ import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+
+import es.dmoral.toasty.Toasty;
 
 public class AppointmentFragment extends Fragment {
 
@@ -37,6 +42,9 @@ public String[] apptType = {"UPCOMING APPOINTMENTS", "PREVIOUS APPOINTMENTS"};
 public boolean upcoming = true;
 public String barberKey = "barber";
 public String createdKey = "createdAt";
+public String occurredKey = "occurred";
+public String dateKey = "date";
+ParseUser currentUser = ParseUser.getCurrentUser();
 
 public static final String TAG = "AppointmentFragment";
 
@@ -52,6 +60,7 @@ public static final String TAG = "AppointmentFragment";
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        updateAppointments();
         // Inflate the layout for this fragment
         View v =  inflater.inflate(R.layout.fragment_appointment, container, false);
         Spinner spinner = (Spinner)v.findViewById(R.id.apptSpinner);
@@ -81,7 +90,6 @@ public static final String TAG = "AppointmentFragment";
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         rvAppointments = view.findViewById(R.id.rvAppointments);
         allAppointments = new ArrayList<>();
         adapter = new AppointmentsAdapter(getContext(), allAppointments);
@@ -95,7 +103,6 @@ public static final String TAG = "AppointmentFragment";
 
     public void queryAppointments() {
 
-        ParseUser currentUser = ParseUser.getCurrentUser();
         allAppointments.clear();
         ParseQuery<Appointments> query = ParseQuery.getQuery(Appointments.class);
         query.include(Appointments.KEY_USER);
@@ -123,4 +130,38 @@ public static final String TAG = "AppointmentFragment";
 
     }
 
+    private void updateAppointments(){
+        ParseQuery<Appointments> query = ParseQuery.getQuery(Appointments.class);
+        if(currentUser.getBoolean(barberKey))
+            query.whereEqualTo(Appointments.KEY_USER, currentUser);
+        else
+            query.whereEqualTo(Appointments.KEY_BOOKER, currentUser);
+        query.findInBackground(new FindCallback<Appointments>() {
+            @Override
+            public void done(List<Appointments> objects, ParseException e) {
+                if(e != null)
+                    return;
+                for(Appointments appt : objects){
+                    Date apptDate = appt.getDate(dateKeygit );
+                    Date currDate = new Date();
+                    if(apptDate.getYear() < currDate.getYear()) {
+                        appt.put(occurredKey, true);
+                    }
+                    if(apptDate.getYear() == currDate.getYear() && apptDate.getMonth() < currDate.getMonth()) {
+                        appt.put(occurredKey, true);
+                    }
+                    if(apptDate.getYear() == currDate.getYear() && apptDate.getMonth() == currDate.getMonth() && apptDate.getDate() < currDate.getDate()) {
+                        appt.put(occurredKey, true);
+                    }
+                    if(apptDate.getYear() == currDate.getYear() && apptDate.getMonth() == currDate.getMonth() && apptDate.getDate() == currDate.getDate() && apptDate.getHours() < currDate.getHours()) {
+                        appt.put(occurredKey, true);
+                    }
+                    if(apptDate.getYear() == currDate.getYear() && apptDate.getMonth() == currDate.getMonth() && apptDate.getDate() == currDate.getDate() && apptDate.getHours() == currDate.getHours() && apptDate.getMinutes() < currDate.getMinutes()) {
+                        appt.put(occurredKey, true);
+                    }
+                    appt.saveInBackground();
+                }
+            }
+        });
+    }
 }
