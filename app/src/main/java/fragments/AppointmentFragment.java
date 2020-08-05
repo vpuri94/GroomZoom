@@ -142,7 +142,7 @@ public static final String TAG = "AppointmentFragment";
                 if(e != null)
                     return;
                 for(Appointments appt : objects){
-                    Date apptDate = appt.getDate(dateKeygit );
+                    Date apptDate = appt.getDate(dateKey);
                     Date currDate = new Date();
                     if(apptDate.getYear() < currDate.getYear()) {
                         appt.put(occurredKey, true);

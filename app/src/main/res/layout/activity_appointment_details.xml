@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:layout_margin="6dp">
 
     <TextView
@@ -53,23 +53,24 @@
 
     <ImageView
         android:id="@+id/ivProfilepic"
-        android:layout_width="0dp"
-        android:layout_height="201dp"
+        android:layout_width="171dp"
+        android:layout_height="227dp"
+        android:cropToPadding="true"
+        android:scaleType="centerInside"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/tvDate"
         tools:layout_editor_absoluteY="3dp"
         tools:srcCompat="@tools:sample/avatars" />
 
-    <RatingBar
+    <me.zhanghai.android.materialratingbar.MaterialRatingBar
         android:id="@+id/rbAppt"
-        style="@style/Widget.AppCompat.RatingBar.Indicator"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/Widget.MaterialRatingBar.RatingBar"
+        android:layout_width="222dp"
+        android:layout_height="37dp"
         android:layout_marginTop="4dp"
         android:clickable="false"
         android:numStars="5"
-        android:stepSize="0.5"
         app:layout_constraintTop_toBottomOf="@+id/RATING"
         tools:layout_editor_absoluteX="0dp" />
 
@@ -91,5 +92,61 @@
         android:text="Message"
         app:layout_constraintTop_toBottomOf="@+id/tvServicesList"
         tools:layout_editor_absoluteX="0dp" />
+
+    <ImageView
+        android:id="@+id/ivLeftPic"
+        android:layout_width="143dp"
+        android:layout_height="189dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="104dp"
+        android:adjustViewBounds="true"
+        android:cropToPadding="true"
+        android:scaleType="centerInside"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ivProfilepic"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:text="Left Selfie"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ivLeftPic"
+        app:layout_constraintVertical_bias="1.0"
+        tools:layout_editor_absoluteX="41dp" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:text="Right Selfie"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.807"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ivRightPic"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <ImageView
+        android:id="@+id/ivRightPic"
+        android:layout_width="155dp"
+        android:layout_height="192dp"
+        android:layout_marginTop="104dp"
+        android:layout_marginEnd="16dp"
+        android:adjustViewBounds="true"
+        android:cropToPadding="true"
+        android:scaleType="centerInside"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/ivLeftPic"
+        app:layout_constraintTop_toBottomOf="@+id/ivProfilepic"
+        tools:srcCompat="@tools:sample/avatars" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

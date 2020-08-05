@@ -53,6 +53,7 @@ dependencies {
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.0.10'
     implementation  'com.github.kizitonwose:CalendarView:0.4.2'
     implementation 'com.gauravk.bubblenavigation:bubblenavigation:1.0.7'
+    implementation 'me.zhanghai.android.materialratingbar:library:1.4.0'
 
 
 }

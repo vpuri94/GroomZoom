@@ -21,16 +21,19 @@ import org.parceler.Parcels;
 import java.util.List;
 
 import es.dmoral.toasty.Toasty;
+import me.zhanghai.android.materialratingbar.MaterialRatingBar;
 
 public class AppointmentDetailsActivity extends AppCompatActivity {
     // the appointment to display
     Appointments appointment;
     public static String appointmentMsg = "Appointment with: ";
-    public static String dateMsg = "Date of appt: ";
+    public static String dateMsg = "Appt is @: ";
     boolean isBarber;
     ImageView ivProfilepic;
+    ImageView ivLeftPic;
+    ImageView ivRightPic;
     public String priceMsg = "Price of appt. : $";
-    RatingBar rbAppt;
+    MaterialRatingBar rbAppt;
     TextView tvApptname;
     TextView tvDate;
     TextView tvPrice;
@@ -53,6 +56,10 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
             // Scales the profile picture by the factor above
             ivProfilepic.setScaleX(mScaleFactor);
             ivProfilepic.setScaleY(mScaleFactor);
+            ivLeftPic.setScaleX(mScaleFactor);
+            ivLeftPic.setScaleY(mScaleFactor);
+            ivRightPic.setScaleX(mScaleFactor);
+            ivRightPic.setScaleY(mScaleFactor);
             return true;
         }
     }
@@ -67,7 +74,9 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
         tvPrice = (TextView) findViewById(R.id.tvPrice);
         tvDate = (TextView) findViewById(R.id.tvDate);
         ivProfilepic = (ImageView) findViewById(R.id.ivProfilepic);
-        rbAppt = (RatingBar) findViewById(R.id.rbAppt);
+        ivLeftPic = (ImageView) findViewById(R.id.ivLeftPic);
+        ivRightPic = (ImageView) findViewById(R.id.ivRightPic);
+        rbAppt = (MaterialRatingBar) findViewById(R.id.rbAppt);
         tvServicesList  = (TextView) findViewById(R.id.tvServicesList);
         // unwrap the appointment passed in via intent, using its simple name as a key
         appointment = (Appointments) Parcels.unwrap(getIntent().getParcelableExtra(Appointments.class.getSimpleName()));
@@ -94,6 +103,18 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
         tvPrice.setText(priceMsg + appointment.getPrice());
         tvDate.setText(dateMsg + appointment.getDate()[0] + " @ " + appointment.getDate()[1]);
         ParseFile image;
+        ParseFile leftImage = null;
+        ParseFile rightImage = null;
+        try {
+            leftImage = appointment.getBooker().fetchIfNeeded().getParseFile("leftSelfie");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        try {
+            rightImage = appointment.getBooker().fetchIfNeeded().getParseFile("rightSelfie");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         if(isBarber) {
             image = appointment.getProfilePic();
             phoneButton.setVisibility(View.GONE);
@@ -121,12 +142,22 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
         if (image != null) {
             Glide.with(getApplicationContext()).load(image.getUrl()).into(ivProfilepic);
         }
+        if(leftImage != null)
+            Glide.with(getApplicationContext()).load(leftImage.getUrl()).into(ivLeftPic);
+        if(rightImage != null)
+            Glide.with(getApplicationContext()).load(rightImage.getUrl()).into(ivRightPic);
 
         mScaleGestureDetector = new ScaleGestureDetector(this, new ScaleListener());
 
         // display rating of barber from parse server from 0-5, in increments of 0.5
         float rating = (float) appointment.getRating();
         rbAppt.setRating(rating);
+        rbAppt.setOnRatingChangeListener(new MaterialRatingBar.OnRatingChangeListener() {
+            @Override
+            public void onRatingChanged(MaterialRatingBar ratingBar, float rating) {
+                // to fill out
+            }
+        });
         tvServicesList.setText(bulletedVersion(appointment.getServices()));
     }
 
