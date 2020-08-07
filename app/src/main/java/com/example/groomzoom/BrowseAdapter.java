@@ -18,11 +18,14 @@ import com.bumptech.glide.Glide;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseGeoPoint;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import java.util.List;
 
 import es.dmoral.toasty.Toasty;
+import me.zhanghai.android.materialratingbar.MaterialRatingBar;
 
 
 public class BrowseAdapter extends RecyclerView.Adapter<BrowseAdapter.ViewHolder> {
@@ -71,7 +74,7 @@ public class BrowseAdapter extends RecyclerView.Adapter<BrowseAdapter.ViewHolder
         private TextView tvName;
         private TextView tvService;
         private ImageView ivProfile;
-        private RatingBar rbRating;
+        private MaterialRatingBar rbRating;
         private TextView tvDistance;
         private Button btnBook;
 
@@ -81,7 +84,7 @@ public class BrowseAdapter extends RecyclerView.Adapter<BrowseAdapter.ViewHolder
             tvName = itemView.findViewById(R.id.tvName);
             tvService = itemView.findViewById(R.id.tvService);
             ivProfile = itemView.findViewById(R.id.ivProfile);
-            rbRating = itemView.findViewById(R.id.rbRating);
+            rbRating = (MaterialRatingBar) itemView.findViewById(R.id.rbRating);
             tvDistance = itemView.findViewById(R.id.tvDistance);
             btnBook = itemView.findViewById(R.id.btnBook);
         }
@@ -98,7 +101,15 @@ public class BrowseAdapter extends RecyclerView.Adapter<BrowseAdapter.ViewHolder
             ParseFile profilePic = browse.getProfilePic();
             if(profilePic != null)
                 Glide.with(context).load(profilePic.getUrl()).into(ivProfile);
-            float rating = (float) browse.getRating();
+            ParseQuery<ParseObject> query = ParseQuery.getQuery("Ratings");
+            query.whereEqualTo("user", browse.getAddress());
+            ParseObject ratingObj = null;
+            try {
+                ratingObj =  query.getFirst();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            float rating =  ratingObj.getNumber("ratingSum").floatValue() / ratingObj.getNumber("numRatings").floatValue();
             rbRating.setRating(rating);
             tvDistance.setText(distanceMsg + String.format("%.2f",getDistance(browse)) + "km");
             ParseUser currentUser = ParseUser.getCurrentUser();

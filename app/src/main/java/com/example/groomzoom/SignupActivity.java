@@ -13,6 +13,7 @@ import android.widget.EditText;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
@@ -143,7 +144,15 @@ public class SignupActivity extends AppCompatActivity {
         obj.put(usernameKey, currentUser.getString(usernameKey));
         obj.put(nameKey, currentUser.getString(nameKey));
         obj.put(barberKey, currentUser.getBoolean(barberKey));
-        obj.put(ratingKey, currentUser.getNumber(ratingKey));
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Ratings");
+        query.whereEqualTo("user", currentUser);
+        ParseObject ratingObj = null;
+        try {
+            ratingObj =  query.getFirst();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        obj.put(ratingKey, ratingObj.getNumber("ratingSum").floatValue() / ratingObj.getNumber("numRatings").floatValue());
         obj.put(servicesKey, currentUser.getList(servicesKey));
         obj.put(addressKey, currentUser);
         obj.put(priceKey, currentUser.getNumber(priceKey));

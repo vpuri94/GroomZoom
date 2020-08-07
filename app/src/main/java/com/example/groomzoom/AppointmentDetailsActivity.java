@@ -16,6 +16,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
 import com.parse.ParseException;
 import com.parse.ParseFile;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import org.parceler.Parcels;
 import java.util.List;
@@ -34,6 +36,7 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
     ImageView ivRightPic;
     public String priceMsg = "Price of appt. : $";
     MaterialRatingBar rbAppt;
+    MaterialRatingBar rbYourRating;
     TextView tvApptname;
     TextView tvDate;
     TextView tvPrice;
@@ -41,7 +44,12 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
     String barberKey = "barber";
     String phoneNumKey = "phoneNum";
     String smsFormat = "smsto:";
+    String userKey = "user";
+    String numRatingKey = "numRatings";
+    String ratingSumKey = "ratingSum";
+    String ratedKey = "rated";
     Button phoneButton;
+    ParseUser currentUser =  ParseUser.getCurrentUser();
     private ScaleGestureDetector mScaleGestureDetector;
     private float mScaleFactor = 1.0f;
 
@@ -77,11 +85,13 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
         ivLeftPic = (ImageView) findViewById(R.id.ivLeftPic);
         ivRightPic = (ImageView) findViewById(R.id.ivRightPic);
         rbAppt = (MaterialRatingBar) findViewById(R.id.rbAppt);
+        rbYourRating = (MaterialRatingBar) findViewById(R.id.rbYourRating);
+
         tvServicesList  = (TextView) findViewById(R.id.tvServicesList);
         // unwrap the appointment passed in via intent, using its simple name as a key
         appointment = (Appointments) Parcels.unwrap(getIntent().getParcelableExtra(Appointments.class.getSimpleName()));
         // set appointment name and price and date
-        isBarber = ParseUser.getCurrentUser().getBoolean(barberKey);
+        isBarber = currentUser.getBoolean(barberKey);
         phoneButton = (Button) findViewById(R.id.btnPhone);
 
         // display message with other user, casing on if barber or not
@@ -149,14 +159,52 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
 
         mScaleGestureDetector = new ScaleGestureDetector(this, new ScaleListener());
 
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Ratings");
+        if(isBarber)
+            query.whereEqualTo(userKey, appointment.getBooker());
+        else
+            query.whereEqualTo(userKey, appointment.getUser());
+        ParseObject ratingObj = null;
+        try {
+            ratingObj =  query.getFirst();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
         // display rating of barber from parse server from 0-5, in increments of 0.5
-        float rating = (float) appointment.getRating();
+        float rating = ratingObj.getNumber(ratingSumKey).floatValue()  / ratingObj.getNumber(numRatingKey).floatValue();
         rbAppt.setRating(rating);
-        rbAppt.setOnRatingChangeListener(new MaterialRatingBar.OnRatingChangeListener() {
+
+        if(appointment.getBoolean(ratedKey)) {
+            rbYourRating.setRating((float) ((double) (ratingObj.getNumber(ratingSumKey).doubleValue() / ratingObj.getNumber(numRatingKey).doubleValue())));
+            rbYourRating.setIsIndicator(true);
+        }
+
+        ParseObject finalRatingObj = ratingObj;
+        rbYourRating.setOnRatingChangeListener(new MaterialRatingBar.OnRatingChangeListener() {
             @Override
             public void onRatingChanged(MaterialRatingBar ratingBar, float rating) {
-                // to fill out
-            }
+                if(appointment.getBoolean(ratedKey))
+                    return;
+                else {
+                    rbYourRating.setIsIndicator(true);
+                    appointment.put(ratedKey, true);
+                    appointment.saveInBackground();
+                    int numRatings = 0;
+                    float ratingFrom = (float) 0.0;
+                    numRatings = finalRatingObj.getNumber(numRatingKey).intValue();
+                    ratingFrom =  (finalRatingObj.getNumber(ratingSumKey).floatValue()) / (finalRatingObj.getNumber(numRatingKey).floatValue());
+                    float newRating = (finalRatingObj.getNumber(ratingSumKey).floatValue() + rating);
+                    finalRatingObj.put(ratingSumKey, (Number) newRating);
+                    finalRatingObj.put(numRatingKey, (Number)(numRatings + 1));
+                    appointment.saveInBackground();
+                    finalRatingObj.saveInBackground();
+                    appointment.getBooker().saveInBackground();
+                    appointment.getUser().saveInBackground();
+                    appointment.saveInBackground();
+                    Toasty.success(getApplicationContext(), ratedKey, Toasty.LENGTH_SHORT, true).show();
+                }
+                }
         });
         tvServicesList.setText(bulletedVersion(appointment.getServices()));
     }

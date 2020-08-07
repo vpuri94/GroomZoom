@@ -237,7 +237,7 @@ public class Booking extends AppCompatActivity {
         ParseObject obj = new Appointments();
         obj.put(priceMsg, browse.getNumber(priceMsg));
         obj.put(occurredKey, false);
-        obj.put(userRatingKey, browse.getNumber(ratingKey));
+        obj.put("rated", false);
         obj.put(pfpKey, currentUser.getParseFile(pfpKey));
         obj.put("phoneNum", browse.getString("phoneNum"));
         obj.put(servicesDoneKey, currentUser.getList(servicesKey));

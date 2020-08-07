@@ -7,6 +7,29 @@
     android:layout_margin="6dp">
 
     <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="PLEASE ENTER YOUR RATING BELOW"
+        android:textAlignment="center"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@+id/btnPhone"
+        tools:layout_editor_absoluteX="8dp" />
+
+    <me.zhanghai.android.materialratingbar.MaterialRatingBar
+        android:id="@+id/rbYourRating"
+        style="@style/Widget.MaterialRatingBar.RatingBar"
+        android:layout_width="222dp"
+        android:layout_height="37dp"
+        android:layout_marginTop="8dp"
+        android:clickable="false"
+        android:numStars="5"
+        app:layout_constraintTop_toBottomOf="@+id/textView5"
+        tools:layout_editor_absoluteX="6dp" />
+
+    <TextView
         android:id="@+id/tvApptname"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -71,6 +94,7 @@
         android:layout_marginTop="4dp"
         android:clickable="false"
         android:numStars="5"
+        android:isIndicator="true"
         app:layout_constraintTop_toBottomOf="@+id/RATING"
         tools:layout_editor_absoluteX="0dp" />
 
